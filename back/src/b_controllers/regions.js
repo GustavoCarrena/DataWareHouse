@@ -6,6 +6,7 @@ const Response = require ('../../classes/response');
 
 const regions = {
     
+    // Toda la información de Regiones, Paises y Ciudades
     getAllDataRegions: async (req, res) => {
         try {
             const getData = await regionsQueries.getAllDataRegions();
@@ -15,6 +16,9 @@ const regions = {
         }
     },
 
+    /*=== REGIONES ===*/
+    
+    //Obtener Id y Descripción de las Regiones
     getRegionsData: async (req, res) => {
         try {
             const getData = await regionsQueries.getRegions();
@@ -24,6 +28,20 @@ const regions = {
         }
     },
 
+    // Creación de Región
+    addRegion: async (req,res) => {
+        try {
+            const {region_name} = req.body;
+            await regionsQueries.createRegion(region_name);
+            res.status(200).send(new Response (false,200,"Región Creada Exitosamente",region_name))
+        } catch (error) {
+            res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
+        }
+    },
+
+    /*=== PAISES ===*/
+
+    // Obetener datos de paises, seleccionados por región a la cual pertenece
     getCountriesData: async (req, res) => {
         try {
             const {region_id} = req.body;
@@ -36,6 +54,19 @@ const regions = {
         }
     },
 
+    //Creación de País
+    addCountry: async (req,res) => {
+        try {
+            const {id, country_name, region_id} = req.body;
+            const addCountry = await regionsQueries.createCountry([id, country_name, region_id]);
+            res.status(200).send(new Response (false,200,"País Creado Exitosamente",addCountry))
+        } catch (error) {
+            res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
+        }
+    },
+
+    /*=== CIUDADES ===*/
+
     getCitiesData: async (req, res) => {
         try {
             const {country_id} = req.body;
@@ -47,6 +78,8 @@ const regions = {
             res.status(500).send(new Response(true, 500, "Error interno del servidor", ""));
         }
     },
+
+
 
 }//fin de regions
 

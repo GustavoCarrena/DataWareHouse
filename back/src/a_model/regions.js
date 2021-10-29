@@ -1,8 +1,10 @@
 const sequelize = require('../../database/db_conection');
 
 const regionsQueries = {
+    
+    /*=== REGIONES ===*/
 
-    /*=== Retorna toda la información de regiones, paises y ciudades, asociados ===*/
+    //Retorna toda la información de regiones, paises y ciudades, asociados
     getAllDataRegions: () => {
         return sequelize.query(
             `
@@ -18,12 +20,28 @@ const regionsQueries = {
             {type: sequelize.QueryTypes.SELECT});
     },
 
-    /*=== Consulta de id y de nombre de regiones ===*/
+    //Consulta de id y de nombre de regiones
     getRegions: () => {
         return sequelize.query(
             'SELECT * FROM regions;', 
             {type: sequelize.QueryTypes.SELECT});
     },
+
+    getRegionName: () => {
+        return sequelize.query(
+            'SELECT region_name FROM regions;', 
+            {type: sequelize.QueryTypes.SELECT});
+    },
+
+    //Alta de Región
+    createRegion: (regionData) => {
+        return sequelize.query('INSERT INTO regions (region_name) VALUES(?)', {
+            type: sequelize.QueryTypes.INSERT,
+            replacements: [regionData]
+        });
+    },
+
+    /*=== PAISES ===*/
 
     /*=== Consulta de paises por region ===*/
     getCountriesByRegion: (regionid) => {
@@ -39,6 +57,22 @@ const regionsQueries = {
             });
     },
 
+    getAllCountries: () => {
+        return sequelize.query(
+            `SELECT  * FROM countries`, 
+            {type: sequelize.QueryTypes.SELECT});
+    },
+
+    //Alta de País
+    createCountry: (countryData) => {
+        return sequelize.query('INSERT INTO countries (id,country_name, region_id) VALUES(?,?,?)', {
+            type: sequelize.QueryTypes.INSERT,
+            replacements: countryData
+        });
+    },
+
+    /*=== CIUDADES ===*/
+    
     /*=== Consulta de ciudades por paises ===*/
     getCitiesByCountry: (id) => {
         return sequelize.query(
@@ -53,13 +87,6 @@ const regionsQueries = {
             type: sequelize.QueryTypes.SELECT,
             replacements: [id]
             });
-    },
-
-    createRegion: (regionData) => {
-        return sequelize.query('INSERT INTO regions VALUES(region_name)'),{
-            type: sequelize.QueryTypes.INSERT,
-            replacements: [regionData]
-        }
     },
 
 }; //fin regions

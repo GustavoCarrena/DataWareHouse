@@ -8,5 +8,9 @@ router.get('/getAllRegionsData', employeesMiddlewares.authenticateJWT,regions.ge
 router.get('/getRegionsData', employeesMiddlewares.authenticateJWT,regions.getRegionsData);
 router.get('/getCountriesData', employeesMiddlewares.authenticateJWT,regionsMiddlewares.dataFillCountryValidate, regions.getCountriesData);
 router.get('/getCitiesData', employeesMiddlewares.authenticateJWT,regionsMiddlewares.dataFillCityValidate,regions.getCitiesData);
+router.post('/createRegion', employeesMiddlewares.authenticateJWT, regionsMiddlewares.dataValidateInsertRegion, regions.addRegion);
+router.post('/addCountry', employeesMiddlewares.authenticateJWT, regionsMiddlewares.dataValidateInsertCountry,regions.addCountry);
+
+
 
 module.exports = router;
