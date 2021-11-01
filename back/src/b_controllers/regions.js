@@ -77,6 +77,16 @@ const regions = {
         }
     },
 
+    // Lista de todos los Paises con su Región identificada
+    getAllCountryData: async (req, res) => {
+        try {
+            const getData = await regionsQueries.getAllCountries();
+            res.status(200).send(new Response(false, 200, "Consulta exitosa", getData));
+        } catch (error) {
+            res.status(400).send(new Response(true, 400, "No se puede obtener la consulta", ""));
+        }
+    },
+
     //Creación de País
     addCountry: async (req,res) => {
         try {
@@ -87,6 +97,8 @@ const regions = {
             res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
         }
     },
+
+
 
     // Actualización de datos de País
     updateCountry: async (req,res) => {
@@ -99,7 +111,16 @@ const regions = {
         }
     },
 
-
+        // Elimnación de País
+        deleteCountry: async (req,res) => {
+            try {
+                const {id} = req.body;
+                await regionsQueries.deleteCountryById(id);
+                res.status(200).send(new Response (false,200,"País Eliminado Exitosamente",req.body.id))
+            } catch (error) {
+                res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
+            }
+        },
 
     /*=== CIUDADES ===*/
 

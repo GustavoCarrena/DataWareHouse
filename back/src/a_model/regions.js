@@ -95,6 +95,13 @@ const regionsQueries = {
         });
     },
 
+    //Elminar País
+    deleteCountryById : (id ) => {
+        return sequelize.query(`DELETE FROM countries WHERE id = ?`, {
+            type: sequelize.QueryTypes.PUT,
+            replacements: [id]
+        });
+    },
 
     /*=== CIUDADES ===*/
     
@@ -134,6 +141,7 @@ const regionsQueries = {
             replacements: [city_name, country_id,id]
         });
     },
+
 
 
 }; //fin regions

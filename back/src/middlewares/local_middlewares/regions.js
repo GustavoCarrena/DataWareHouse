@@ -1,6 +1,7 @@
 const Response = require('../../../classes/response');
 // const {employeesQueries} = require('../../a_model/employees');
 const {regionsQueries} = require('../../a_model/regions');
+// const {regions} = require('../../b_controllers/regions')
 // const jwt = require('jsonwebtoken');
 // const JWTKEY = process.env.JWTKEY;
 
@@ -199,19 +200,12 @@ const regionsMiddlewares = {
         
         
         const getAllDataRegions = await regionsQueries.getAllDataRegions();//Devuelve todas las regiones que tienen paises y ciudades asociados
-        
         const getCountryByRegion = await regionsQueries.getCountriesByRegion(id);// Devuelve las regiones que tienen al menos un pais asociado
-        
         const findCountryId = getAllDataRegions.map(co => co.country_id) //Todos los codigos de paises que no tienen pais + ciudad
-        
         const onlyCountries = getCountryByRegion.map(co => co.country_id).find(co => co); // Codigos de Region que tienen asociados Paises (pero no ciudades)
-
         const countryAndCities = findCountryId.find(co=>co === onlyCountries) //Códigos de Region que tiene asociado Paises y Ciudades
-
         const getRegions = await regionsQueries.getRegions() //consulta codigos de regiones
-
         const regionExist = getRegions.map(r => r.id).find(r=>r === id) //que exista el codigo de region ingresado
-
         req.body.id === " " ? 
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación", `No puede insertar un caracter vacío`)):       
 
@@ -230,6 +224,41 @@ const regionsMiddlewares = {
 
     },
 
+    dataValidateDeleteCountry: async (req, res, next) => {
+    
+        const {id} = req.body;
+        
+        //que exista pais
+        const getAllCountrysData = await regionsQueries.getAllCountries();
+        const validateCountryDb = getAllCountrysData.map(co => co.id).find(cod => cod == req.body.id);//Si existe para eliminar
+        //que no tenga una ciudad asociada
+        const getCitiesByCountry = await regionsQueries.getCitiesByCountry(id)
+        const getcityId = getCitiesByCountry.map(co => co.city_id)/*.find(cid => cid == getCitiesByCountry)*/
+       
+
+        console.log('getCitiesByCountry===>', getCitiesByCountry);
+        console.log('getcityId===>', getcityId);
+
+        console.log('getcityId===>', getcityId);
+
+
+        console.log('req.body===>', req.body.id);
+
+        for (let i = 0; i < getcityId.length; i++) {
+            req.body.id === getcityId[i] ? console.log('encontró'):console.log('no encontró');
+            
+        }        
+
+
+        // console.log('extraervalor===>', extraervalor);
+
+
+        validateCountryDb === undefined ? 
+        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. El País que desea eliminar no existe",req.body.id)):
+        
+        next()
+
+    },
 
 };
 
