@@ -18,7 +18,7 @@ CREATE TABLE countries (
 id CHAR(3) NOT NULL,
 country_name VARCHAR(80) NOT NULL,
 region_id INT UNSIGNED NOT NULL,
-FOREIGN KEY (region_id) REFERENCES regions (id),
+FOREIGN KEY (region_id) REFERENCES regions (id) ON UPDATE CASCADE,
 PRIMARY KEY(id)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -55,7 +55,7 @@ CREATE TABLE cities (
 id INT UNSIGNED NOT NULL AUTO_INCREMENT,
 city_name VARCHAR(80) NOT NULL,
 country_id CHAR(3) NOT NULL,
-FOREIGN KEY(country_id) REFERENCES countries(id),
+FOREIGN KEY(country_id) REFERENCES countries(id) ON UPDATE CASCADE,
 PRIMARY KEY(id)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -135,7 +135,7 @@ city_id INT UNSIGNED NOT NULL,
 company_address VARCHAR (60) NOT NULL,
 email VARCHAR (255) NOT NULL,
 phone VARCHAR (50) NOT NULL,
-FOREIGN KEY(city_id) REFERENCES cities(id),
+FOREIGN KEY(city_id) REFERENCES cities(id) ON UPDATE CASCADE,
 PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -158,8 +158,8 @@ adress VARCHAR(60) NOT NULL,
 city_id INT UNSIGNED NOT NULL,
 porposal_interest ENUM ('0','25%','50%','75%','100%') NOT NULL,
 company_id INT UNSIGNED NOT NULL,
-FOREIGN KEY(company_id) REFERENCES companies(id),
-FOREIGN KEY(city_id) REFERENCES cities(id),
+FOREIGN KEY(company_id) REFERENCES companies(id) ON UPDATE CASCADE,
+FOREIGN KEY(city_id) REFERENCES cities(id) ON UPDATE CASCADE,
 PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -183,8 +183,8 @@ client_id INT UNSIGNED NOT NULL,
 channel_id INT UNSIGNED NOT NULL,
 account VARCHAR(255) NOT NULL,
 preference ENUM ('Sin preferencias','Canal favorito', 'No molestar') NOT NULL,
-FOREIGN KEY(client_id) REFERENCES clients(id),
-FOREIGN KEY(channel_id) REFERENCES channel(id),
+FOREIGN KEY(client_id) REFERENCES clients(id) ON UPDATE CASCADE,
+FOREIGN KEY(channel_id) REFERENCES channel(id) ON UPDATE CASCADE,
 PRIMARY KEY(id)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -222,7 +222,7 @@ lastname VARCHAR(60) NOT NULL,
 email VARCHAR(255) NOT NULL,
 role_id CHAR(4) NOT NULL,
 user_pass VARCHAR(50) NOT NULL,
-FOREIGN KEY(role_id) REFERENCES roles(id),
+FOREIGN KEY(role_id) REFERENCES roles(id) ON UPDATE CASCADE,
 PRIMARY KEY(id)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
