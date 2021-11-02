@@ -142,6 +142,13 @@ const regionsQueries = {
         });
     },
 
+    //Elminar País
+    deleteCityById : (id ) => {
+        return sequelize.query(`DELETE FROM cities WHERE id = ?`, {
+            type: sequelize.QueryTypes.PUT,
+            replacements: [id]
+        });
+    },
 
 
 }; //fin regions

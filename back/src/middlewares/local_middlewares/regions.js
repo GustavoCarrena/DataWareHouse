@@ -199,13 +199,14 @@ const regionsMiddlewares = {
         const {id} = req.body;
         
         
-        const getAllDataRegions = await regionsQueries.getAllDataRegions();//Devuelve todas las regiones que tienen paises y ciudades asociados
-        const getCountryByRegion = await regionsQueries.getCountriesByRegion(id);// Devuelve las regiones que tienen al menos un pais asociado
-        const findCountryId = getAllDataRegions.map(co => co.country_id) //Todos los codigos de paises que no tienen pais + ciudad
-        const onlyCountries = getCountryByRegion.map(co => co.country_id).find(co => co); // Codigos de Region que tienen asociados Paises (pero no ciudades)
-        const countryAndCities = findCountryId.find(co=>co === onlyCountries) //Códigos de Region que tiene asociado Paises y Ciudades
-        const getRegions = await regionsQueries.getRegions() //consulta codigos de regiones
+        const getAllDataRegions = await regionsQueries.getAllDataRegions();
+        const getCountryByRegion = await regionsQueries.getCountriesByRegion(id);
+        const findCountryId = getAllDataRegions.map(co => co.country_id) 
+        const onlyCountries = getCountryByRegion.map(co => co.country_id).find(co => co);
+        const countryAndCities = findCountryId.find(co=>co === onlyCountries) 
+        const getRegions = await regionsQueries.getRegions()
         const regionExist = getRegions.map(r => r.id).find(r=>r === id) //que exista el codigo de region ingresado
+        
         req.body.id === " " ? 
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación", `No puede insertar un caracter vacío`)):       
 
@@ -228,44 +229,50 @@ const regionsMiddlewares = {
     
         const {id} = req.body;
         
-        //que exista pais
         const getAllCountrysData = await regionsQueries.getAllCountries();
-        const validateCountryDb = getAllCountrysData.map(co => co.id).find(cod => cod == req.body.id);//Si existe para eliminar
-        //que no tenga una ciudad asociada
+        const validateCountryDb = getAllCountrysData.map(co => co.id).find(cod => cod == req.body.id);//Si existe Pais en la base para eliminar
+        
         const getCitiesByCountry = await regionsQueries.getCitiesByCountry(id)
         const getcityId = getCitiesByCountry.map(co => co.city_id)/*.find(cid => cid == getCitiesByCountry)*/
-       
-        //VER COMO VALIDAR ==> QUE NO TENGA CIUDAD ASOCIADA... PARA ESO BUSCAR CIUDADES DEL PAIS ANALIZADO Y COMPARAR
 
-        console.log('Existe Pais en la Base?===>', validateCountryDb);
+        req.body.id === " " ? 
+        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación", `No puede insertar un caracter vacío`)):       
 
-        console.log('Lista de las ciudades que pertenecen al pais seleccionado===>', getCitiesByCountry);
-        
-        console.log('Devuelve Id de la ciudad que pertenece al pais seleccionado===>', getcityId);
+        req.body.id.length === 0 ?
+        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación", `Debe ingresar todos los datos`)):
 
-        
-
-
-        console.log('req.body===>', req.body.id);
-
-
-       
-
-        for (let i = 0; i < getcityId.length; i++) {
-            req.body.id === getcityId[i] ? console.log('encontró'):console.log('no encontró');
-            
-
-        }        
-
-
-        // console.log('extraervalor===>', extraervalor);
+        typeof(req.body.id) !== "string"  ? 
+        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. El campo debe ser texto", "")):
 
 
         validateCountryDb === undefined ? 
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. El País que desea eliminar no existe",req.body.id)):
-        
-        next()
+        getcityId.length !== 0 ?
+        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. El País tiene ciudades asociadas",getCitiesByCountry)):
 
+        next()
+    },
+
+    dataValidateDeleteCity: async (req, res, next) => {
+    
+        const id = req.body.id;
+        
+        const getAllCitysData = await regionsQueries.getAllCities();
+        const validateCityDb = getAllCitysData.map(co => co.id).find(cod => cod == id);//Si existe Ciudad en la base para eliminar
+
+        req.body.id === " " ? 
+        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación", `No puede insertar un caracter vacío`)):       
+
+        req.body.id.length === 0 ?
+        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación", `Debe ingresar todos los datos`)):
+
+        typeof(req.body.id) !== "number"  ? 
+        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. El campo debe ser numérico", "")):
+
+        validateCityDb === undefined ? 
+        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. La ciudad que desea eliminar no existe",req.body.id)):
+
+        next()
     },
 
 };

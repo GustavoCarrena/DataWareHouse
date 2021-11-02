@@ -123,7 +123,8 @@ const regions = {
         },
 
     /*=== CIUDADES ===*/
-
+    
+    // Obetener datos de ciudades, seleccionados por pais a la cual pertenecen
     getCitiesData: async (req, res) => {
         try {
             const {country_id} = req.body;
@@ -133,6 +134,16 @@ const regions = {
             : res.status(400).send(new Response(true, 400, "No existe el código de País ingresado", `Código ingresado: ${country_id}`));
         } catch (error) {
             res.status(500).send(new Response(true, 500, "Error interno del servidor", ""));
+        }
+    },
+
+    // Lista de todos las ciudades con su Pais identificado
+    getAllCityData: async (req, res) => {
+        try {
+            const getData = await regionsQueries.getAllCities();
+            res.status(200).send(new Response(false, 200, "Consulta exitosa", getData));
+        } catch (error) {
+            res.status(400).send(new Response(true, 400, "No se puede obtener la consulta", ""));
         }
     },
 
@@ -161,6 +172,16 @@ const regions = {
         }
     },
 
+    // Elimnación de País
+    deleteCity: async (req,res) => {
+        try {
+            const {id} = req.body;
+            await regionsQueries.deleteCityById(id);
+            res.status(200).send(new Response (false,200,"Ciudad Eliminada Exitosamente",req.body.id))
+        } catch (error) {
+            res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
+        }
+    },
 
 }//fin de regions
 
