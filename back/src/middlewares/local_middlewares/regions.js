@@ -235,6 +235,7 @@ const regionsMiddlewares = {
         const getCitiesByCountry = await regionsQueries.getCitiesByCountry(id)
         const getcityId = getCitiesByCountry.map(co => co.city_id)/*.find(cid => cid == getCitiesByCountry)*/
        
+        //VER COMO VALIDAR ==> QUE NO TENGA CIUDAD ASOCIADA... PARA ESO BUSCAR CIUDADES DEL PAIS ANALIZADO Y COMPARAR
 
         console.log('getCitiesByCountry===>', getCitiesByCountry);
         console.log('getcityId===>', getcityId);
