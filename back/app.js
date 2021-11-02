@@ -6,8 +6,6 @@ const routes = require('./src/d_routes/routes');
 app.use(express.json());
 const globalMiddlewares = require('./src/middlewares/global_middlewares/global_middlewares');
 
-/*=== prueba github clone ===*/
-
 //GLOBAL MIDDLEWARES
 globalMiddlewares(app);
 

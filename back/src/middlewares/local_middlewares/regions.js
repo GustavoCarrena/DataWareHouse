@@ -237,17 +237,24 @@ const regionsMiddlewares = {
        
         //VER COMO VALIDAR ==> QUE NO TENGA CIUDAD ASOCIADA... PARA ESO BUSCAR CIUDADES DEL PAIS ANALIZADO Y COMPARAR
 
-        console.log('getCitiesByCountry===>', getCitiesByCountry);
-        console.log('getcityId===>', getcityId);
+        console.log('Existe Pais en la Base?===>', validateCountryDb);
 
-        console.log('getcityId===>', getcityId);
+        console.log('Lista de las ciudades que pertenecen al pais seleccionado===>', getCitiesByCountry);
+        
+        console.log('Devuelve Id de la ciudad que pertenece al pais seleccionado===>', getcityId);
+
+        
 
 
         console.log('req.body===>', req.body.id);
 
+
+       
+
         for (let i = 0; i < getcityId.length; i++) {
             req.body.id === getcityId[i] ? console.log('encontró'):console.log('no encontró');
             
+
         }        
 
 
