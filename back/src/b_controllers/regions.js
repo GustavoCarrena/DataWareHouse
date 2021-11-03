@@ -160,7 +160,7 @@ const regions = {
         }
     },
 
-    // Actualización de datos de País
+    // Actualización de datos de Ciudad
     updateCity: async (req,res) => {
         const {id,city_name} = req.body;
         const country_id = req.body.country_id.toUpperCase()
@@ -172,7 +172,7 @@ const regions = {
         }
     },
 
-    // Elimnación de País
+    // Eliminación de Ciudad
     deleteCity: async (req,res) => {
         try {
             const {id} = req.body;
