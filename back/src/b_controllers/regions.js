@@ -1,8 +1,5 @@
 const {regionsQueries} = require('../a_model/regions');
 const Response = require ('../../classes/response');
-// const jwt = require('jsonwebtoken');
-// require('dotenv').config();
-// const JWTKEY = process.env.JWTKEY;
 
 const regions = {
     
