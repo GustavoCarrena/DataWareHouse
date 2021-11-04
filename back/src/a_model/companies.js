@@ -2,8 +2,9 @@ const sequelize = require('../../database/db_conection');
 
 const companiesQueries = {
 
-     //Retorna toda la información de la compañías
-     getAllDataCompanies: () => {
+    //  Retorna toda la información de la compañías
+    
+    getAllDataCompanies: () => {
         return sequelize.query(
             `
             SELECT co.id AS company_id, co.company_name, co.company_address, co.email AS company_email, co.phone AS company_phone, 
@@ -22,9 +23,16 @@ const companiesQueries = {
             {type: sequelize.QueryTypes.SELECT});
     },
 
-
-
-
+        //Alta de compañia
+        createCompany: (data) => {
+            return sequelize.query(`INSERT INTO companies 
+            company_name, city_id, company_adress, email, phone 
+            VALUES(?, ?, ?, ?, ?)`, 
+            {
+                type: sequelize.QueryTypes.INSERT,
+                replacements: [data]
+            });
+        },
 
 };
 
