@@ -17,9 +17,9 @@ const companies = {
        // Creación de companias
     addCompany: async (req,res) => {
         try {
-            const {company_name, city_id, company_adress, email, phone} = req.body;
-            const createCompany = await companiesQueries.createCompany(company_name, city_id, company_adress, email, phone);
-            res.status(200).send(new Response (false,200,"Compañía Creada Exitosamente",createCompany));
+            const {company_name, city_id, company_address, email, phone} = req.body;
+            const createCompany = await companiesQueries.createCompany(company_name, city_id, company_address, email, phone);
+            res.status(200).send(new Response (false,200,"Compañía Creada Exitosamente",req.body));
         } catch (error) {
             res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
         }

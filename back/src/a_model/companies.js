@@ -24,13 +24,18 @@ const companiesQueries = {
     },
 
         //Alta de compañia
-        createCompany: (data) => {
-            return sequelize.query(`INSERT INTO companies 
-            company_name, city_id, company_adress, email, phone 
-            VALUES(?, ?, ?, ?, ?)`, 
-            {
+        // createCompany: (Cdata) => {
+        //     return sequelize.query('INSERT INTO companies (company_name, city_id, company_address, email, phone) VALUES(?,?,?,?,?)', 
+        //     {
+        //         type: sequelize.QueryTypes.INSERT,
+        //         replacements: Cdata
+        //     });
+        // },
+
+        createCompany: (id,company_name, city_id, company_address, email, phone) => {
+            return sequelize.query('INSERT INTO companies (company_name, city_id, company_address, email, phone) VALUES(?,?,?,?,?)', {
                 type: sequelize.QueryTypes.INSERT,
-                replacements: [data]
+                replacements: [id,company_name, city_id, company_address, email, phone]
             });
         },
 
