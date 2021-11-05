@@ -127,6 +127,19 @@ const regionsQueries = {
             {type: sequelize.QueryTypes.SELECT});
     },
 
+    getAllCitiesData: () => {
+        return sequelize.query(
+            `  SELECT ci.id AS city_id, ci.city_name, ci.country_id, co.country_name, co.region_id, re.region_name
+            FROM cities ci
+            INNER JOIN countries co
+            ON (ci.country_id = co.id)
+            INNER JOIN regions re
+            ON (co.region_id = re.id)
+            ORDER BY ci.id `, 
+            {type: sequelize.QueryTypes.SELECT});
+    },
+
+
     createCity: (countryData) => {
         return sequelize.query('INSERT INTO cities (id,city_name, country_id) VALUES(?,?,?)', {
             type: sequelize.QueryTypes.INSERT,

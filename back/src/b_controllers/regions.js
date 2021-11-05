@@ -134,10 +134,10 @@ const regions = {
         }
     },
 
-    // Lista de todos las ciudades con su Pais identificado
+    // Lista de todos las ciudades con su Pais y Región
     getAllCityData: async (req, res) => {
         try {
-            const getData = await regionsQueries.getAllCities();
+            const getData = await regionsQueries.getAllCitiesData();
             res.status(200).send(new Response(false, 200, "Consulta exitosa", getData));
         } catch (error) {
             res.status(400).send(new Response(true, 400, "No se puede obtener la consulta", ""));

@@ -7,37 +7,40 @@ const companiesQueries = {
     getAllDataCompanies: () => {
         return sequelize.query(
             `
-            SELECT co.id AS company_id, co.company_name, co.company_address, co.email AS company_email, co.phone AS company_phone, 
-			co.city_id, ci.city_name, coun.id AS country_id, coun.country_name, r.id AS region_id, r.region_name
+            SELECT co.id , co.company_name, co.company_address, co.email AS company_email , co.phone AS company_phone, 
+            ci.id AS city_id, ci.city_name,
+            cy.id AS country_id, cy.country_name,
+            re.id AS region_id, re.region_name
             FROM companies co
             INNER JOIN cities ci
             ON (co.city_id = ci.id)
-            INNER JOIN clients cli
-            ON (co.id = cli.company_id)
-            INNER JOIN countries coun
-            ON (ci.country_id = coun.id)
-            INNER JOIN regions r
-            ON (coun.region_id = r.id)
-            GROUP BY co.id          
+            INNER JOIN countries cy
+            ON (ci.country_id = cy.id)
+            INNER JOIN regions re
+            ON (cy.region_id = re.id)         
             `, 
             {type: sequelize.QueryTypes.SELECT});
     },
 
-        //Alta de compañia
-        // createCompany: (Cdata) => {
-        //     return sequelize.query('INSERT INTO companies (company_name, city_id, company_address, email, phone) VALUES(?,?,?,?,?)', 
-        //     {
-        //         type: sequelize.QueryTypes.INSERT,
-        //         replacements: Cdata
-        //     });
-        // },
+    //Alta de compañia
+    createCompany: (id,company_name, city_id, company_address, email, phone) => {
+        return sequelize.query('INSERT INTO companies (company_name, city_id, company_address, email, phone) VALUES(?,?,?,?,?)', {
+            type: sequelize.QueryTypes.INSERT,
+            replacements: [id,company_name, city_id, company_address, email, phone]
+        });
+    },
 
-        createCompany: (id,company_name, city_id, company_address, email, phone) => {
-            return sequelize.query('INSERT INTO companies (company_name, city_id, company_address, email, phone) VALUES(?,?,?,?,?)', {
-                type: sequelize.QueryTypes.INSERT,
-                replacements: [id,company_name, city_id, company_address, email, phone]
-            });
-        },
+    //Editar Compañia
+    updateCompany : (id,company_name,city_id, company_address, email, phone) => {
+        return sequelize.query(
+        `UPDATE companies 
+        SET company_name = ?, city_id = ?, company_address = ?, email = ?, phone = ?
+        WHERE id = ? `,
+        {
+            type: sequelize.QueryTypes.PUT,
+            replacements: [company_name,city_id, company_address, email, phone, id]
+        });
+    },
 
 };
 
