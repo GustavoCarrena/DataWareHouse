@@ -38,6 +38,16 @@ const companies = {
         };
     },
     
+        // Eliminación de Compañia
+        deleteCompany: async (req,res) => {
+            try {
+                const {id} = req.body;
+                await companiesQueries.deleteCompanyById(id);
+                res.status(200).send(new Response (false,200,"Compañía Eliminada Exitosamente",req.body.id))
+            } catch (error) {
+                res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
+            }
+        },
 
 };
 

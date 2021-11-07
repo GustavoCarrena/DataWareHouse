@@ -9,17 +9,27 @@ const employeesMiddlewares = {
     /*=== Que no viajen campos vacíos para registro de Empleado ===*/
     dataFillValidate:  (req, res, next) => {
         const employeeData = req.body.firstname && req.body.lastname && req.body.email && req.body.role_id &&req.body.user_pass;
-        !employeeData 
-        ? res.status(400).send(new Response(true, 400, "No se pudo registrar el empleado", "Todos los campos deben contener datos"))
-        :next();
+        const alphanumericValidation = /[A-Za-z0-9]/i;
+        
+        !employeeData ? res.status(400).send(new Response(true, 400, "No se pudo registrar el empleado", "Todos los campos deben contener datos")):
+        alphanumericValidation.test(req.body.firstname) === false || alphanumericValidation.test(req.body.lastname) === false || alphanumericValidation.test(req.body.user_pass) === false
+        ? res.status(400).send(new Response(true, 400, "No se pudo registrar el empleado. Todos los campos deben contener datos y el formato debe ser alfanumerico", "")):
+
+        typeof req.body.firstname !== 'string'|| typeof req.body.lastname !== 'string' 
+        ? res.status(400).send(new Response(true, 400, "No se pudo registrar el empleado. Los campos nombre y apellido deben contener caracteres alfabéticos", "")):
+        
+        next();
     },
 
-    /*=== Que no se repita email para registro de Empleado ===*/
+    /*=== Que no se repita email para registro de Empleado y el formato sea válido ===*/
     duplicateEmail: async(req, res, next) => {
         const {email} = req.body;   
+        const emailValidation = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
         const getEmail = await employeesQueries.getEmployeesEmail()
         const duplicateEmail = getEmail.find(e => {return e.email == email})
-        duplicateEmail ? res.status(409).send(new Response(true, 409, "El email ya se encuentra registrado para un empleado", duplicateEmail)):next();
+        duplicateEmail ? res.status(409).send(new Response(true, 409, "El email ya se encuentra registrado para un empleado", duplicateEmail)):
+        emailValidation.test(email) === false ? res.status(400).send(new Response(true, 400, "Formato invalido del email", "")):
+        next();
     },
 
     /*=== Que EL PERFIL venga con el formato necesario ===*/
@@ -56,28 +66,53 @@ const employeesMiddlewares = {
         const bearer = req.headers['authorization'];
         const tokenbareer = bearer.split(' ')[1];
         const decoded = jwt.decode(tokenbareer);
-
-        if (decoded['role'] === "ADMI") {
-            next();
-        } else {
-            return res.status(401).send(new Response(true, 401, "El usuario no tiene privilegios de administrador", ""));
-        }
-
+        if (decoded['role'] === "ADMI") {next()} 
+        else {return res.status(401).send(new Response(true, 401, "El usuario no tiene privilegios de administrador", ""))};
     },
 
-    /*=== Que no viajen campos vacíos para modificación de datos de Empleado ===*/
-    updateDataFillValidate:  (req, res, next) => {
-        const employeeData = req.body.id && req.body.firstname && req.body.lastname && req.body.email && req.body.role_id;
-        !employeeData 
-        ? res.status(400).send(new Response(true, 400, "No se pudo registrar el empleado", "Todos los campos deben contener datos"))
-        :next();
+    /*=== Control de campos Update Empleado ===*/
+    updateDataFillValidate: async (req, res, next) => {
+        const employeeData = req.body.id && req.body.firstname && req.body.lastname && req.body.email && req.body.role_id && req.body.user_pass;
+        const alphabeticValidation = /[A-Za-z ]/;
+        const emailValidation = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+        const alphanumericValidation = /[A-Za-z0-9]/i;
+
+        const employeesFullData = await employeesQueries.getEmployeesData();
+        const employeeIdValidate = employeesFullData.find(e => e.id === req.body.id)
+        
+        !employeeData || employeeData === " " || employeeData === 0
+        ? res.status(400).send(new Response(true, 400, "No se pudo registrar el empleado", "Todos los campos deben contener datos")):
+        
+        employeeIdValidate === undefined || typeof  req.body.id !== 'number'  ?
+        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. El id del empleado no existe o el dato ingresado no es numérico", req.body.id)):
+
+        typeof req.body.firstname && typeof req.body.lastname !== 'string' || alphabeticValidation.test(req.body.firstname) === false || alphabeticValidation.test(req.body.lastname) === false?
+        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. El nombre y el apellido del empleado deben ser alfabéticos",{ firstname: req.body.firstname, lastname: req.body.lastname})):
+
+        emailValidation.test(req.body.email) === false ?
+        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. Formato inválido del email", req.body.email)):
+
+        alphanumericValidation.test(req.body.user_pass) == false ?
+        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. La contraseña debe contener caracteres alfanumericos y no puede estar vacía", "")):
+
+        next();
     },
 
-    employeeIdValidate: async (req, res, next) => {
+    employeeDeleteValidate: async (req, res, next) => {
         const {id} = req.body;
-        const selectEmployeeId = await selectEmployeeId(id);
-        selectEmployeeId ? next() :
-        res.status(400).send(new Response(true, 400, "El empleado que intenta eliminar no existe", id));
+        const employeesFullData = await employeesQueries.getEmployeesData();
+        const employeeIdValidate = employeesFullData.find(e => e.id === req.body.id)
+        const numericValidation = /[0-9]/;
+
+        console.log('numericValidation==>', numericValidation.test(id));
+
+        typeof id !== 'number' ||  numericValidation.test(id) == false? 
+        res.status(400).send(new Response(true, 400, "El empleado que intenta eliminar no existe o ingresó un formato vacío o no numérico", id)):
+
+        employeeIdValidate === undefined ? 
+        res.status(400).send(new Response(true, 400, "El empleado que intenta eliminar no existe", "")):
+
+        next();
     }
 };   
 

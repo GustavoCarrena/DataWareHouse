@@ -41,7 +41,7 @@ const employeesQueries = {
 
     /*=== Modificacion de registros de los empleados ===*/
     updateEmployeesData: (id) => {
-        return sequelize.query('UPDATE employees SET firstname = ?, lastname = ?, email = ?, role_id = ? WHERE id = ?',{
+        return sequelize.query('UPDATE employees SET firstname = ?, lastname = ?, email = ?, role_id = ?, user_pass = ? WHERE id = ?',{
             type: sequelize.QueryTypes.UPDATE,
             replacements:id
         });

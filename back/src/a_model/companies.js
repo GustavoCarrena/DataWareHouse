@@ -42,6 +42,13 @@ const companiesQueries = {
         });
     },
 
+        //Elminar Compañia
+        deleteCompanyById : (id ) => {
+            return sequelize.query(`DELETE FROM companies WHERE id = ?`, {
+                type: sequelize.QueryTypes.DELETE,
+                replacements: [id]
+            });
+        },
 };
 
 module.exports = {companiesQueries}

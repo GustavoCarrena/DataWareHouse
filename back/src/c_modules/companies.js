@@ -7,7 +7,8 @@ const {companiesMiddlewares} = require('../middlewares/local_middlewares/compani
 
 router.get('/getAllCompaniesData', employeesMiddlewares.authenticateJWT,companies.getAllCompaniesData);
 router.get('/addCompany', employeesMiddlewares.authenticateJWT, companiesMiddlewares.dataValidateInsertCompany, companies.addCompany);
-router.put('/updateCompany', employeesMiddlewares.authenticateJWT, companies.updateCompany);
+router.put('/updateCompany', employeesMiddlewares.authenticateJWT, companiesMiddlewares.validateDataCompanyById, companies.updateCompany);
+router.delete('/deleteCompany', employeesMiddlewares.authenticateJWT, companiesMiddlewares.validateDataDeleteCompany,companies.deleteCompany);
 
 
 module.exports = router;

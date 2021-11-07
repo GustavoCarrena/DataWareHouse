@@ -43,9 +43,9 @@ const employees = {
     /*=== Modificación de registros en nómina de empleados ===*/
     updateEmployeesData: async(req,res) => {
         try {
-            const {id, firstname, lastname, email, role_id} = req.body;
-            await employeesQueries.updateEmployeesData([firstname, lastname, email, role_id, id]);
-            res.status(200).send(new Response(false, 200, "Modificación exitosa", {Id:id, Nombre:firstname,Apellido:lastname, Email:email, Perfil:role_id}));
+            const {id, firstname, lastname, email, role_id, user_pass} = req.body;
+            await employeesQueries.updateEmployeesData([firstname, lastname, email, role_id, user_pass, id]);
+            res.status(200).send(new Response(false, 200, "Modificación exitosa", {Id:id, Nombre:firstname,Apellido:lastname, Email:email, Perfil:role_id, Contraseña:user_pass}));
         } catch (error) {
             res.status(500).send(new Response(true, 500, "No fue posible realizar la modificación de los registros", error));
         }
