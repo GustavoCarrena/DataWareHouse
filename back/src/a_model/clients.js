@@ -2,7 +2,7 @@ const sequelize = require('../../database/db_conection');
 
 const contactChannelQueries = {
 
-    //Lista de los canales de contacto
+    //Lista de los canales
     getChannels: () => {
         return sequelize.query(
             'SELECT * FROM channel;', 
@@ -33,6 +33,16 @@ const contactChannelQueries = {
             replacements: [id]
         });
     },
+
+    //Lista de todos los canales de contacto asociados a un cliente (contact_channel)
+    // getContactChannels: () => {
+    //     return sequelize.query(
+    //         'SELECT * FROM contact_channel;', 
+    //         {type: sequelize.QueryTypes.SELECT});
+    // },
+
+
+    //Consulta de los canales de contacto de cada cliente (contact_channel)
 
 };
 

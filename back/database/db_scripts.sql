@@ -183,7 +183,7 @@ client_id INT UNSIGNED NOT NULL,
 channel_id INT UNSIGNED NOT NULL,
 account VARCHAR(255) NOT NULL,
 preference ENUM ('Sin preferencias','Canal favorito', 'No molestar') NOT NULL,
-FOREIGN KEY(client_id) REFERENCES clients(id) ON UPDATE CASCADE,
+FOREIGN KEY(client_id) REFERENCES clients(id),
 FOREIGN KEY(channel_id) REFERENCES channel(id) ON UPDATE CASCADE,
 PRIMARY KEY(id)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -229,10 +229,3 @@ PRIMARY KEY(id)
 INSERT INTO employees (firstname, lastname, email, role_id, user_pass) VALUES
 ('admi','admi', 'admi@admi.com', 'ADMI', 'admi'),
 ('user','user', 'user@user.com', 'USER', 'user');
-
--- SELECT ch.channel_description, cl.id AS Id_cliente, co.account, co.preference, cl.firstname, cl.lastname
--- -- FROM clients cl
--- -- INNER JOIN contact co
--- -- ON (cl.id = co.client_id)
--- -- INNER JOIN channel ch
--- -- ON (co.channel_id = ch.id);
