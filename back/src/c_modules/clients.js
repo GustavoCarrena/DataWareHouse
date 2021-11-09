@@ -9,5 +9,8 @@ router.post('/addChannel', employeesMiddlewares.authenticateJWT, clientsMiddlewa
 router.put('/updateChannel', employeesMiddlewares.authenticateJWT, clientsMiddlewares.dataValidateUpdateChannel,contactChannel.updateChannel);
 router.delete('/deleteChannel', employeesMiddlewares.authenticateJWT, clientsMiddlewares.dataValidateDeleteChannel,contactChannel.deleteChannel);
 
+router.get('/getAllContactChannels', employeesMiddlewares.authenticateJWT,contactChannel.getAllContactChannels);
+router.get('/getClientsView', employeesMiddlewares.authenticateJWT,clients.getClientsView);
+
 
 module.exports = router;

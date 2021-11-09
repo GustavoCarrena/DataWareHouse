@@ -46,11 +46,30 @@ const contactChannel = {
             res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
         }
     },
+    
+    //Lista de todos los canales de contacto asociados a un cliente
+    getAllContactChannels: async (req, res) => {
+        try {
+            const getData = await contactChannelQueries.getAllContactChannel();
+            res.status(200).send(new Response(false, 200, "Consulta exitosa", getData));
+        } catch (error) {
+            res.status(400).send(new Response(true, 400, "No se puede obtener la consulta", error));
+        }
+    },
 
 };
 
 const clients = {
 
+    getClientsView: async (req, res) => {
+        try {
+            const getData = await clientsQueries.getClientsView();
+            console.log(getData);
+            res.status(200).send(new Response(false, 200, "Consulta exitosa", getData));
+        } catch (error) {
+            res.status(400).send(new Response(true, 400, "No se puede obtener la consulta", error));
+        }
+    },
 
 };
 
