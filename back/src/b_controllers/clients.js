@@ -78,7 +78,16 @@ const clients = {
     },
 
 
-    
+        // Creación de canal
+        addClient: async (req,res) => {
+            try {
+                const {firstname, lastname, phone, position, email, adress, city_id, porposal_interest,company_id} = req.body;
+                await clientsQueries.createClient(firstname, lastname, phone, position, email, adress, city_id, porposal_interest,company_id);
+                res.status(200).send(new Response (false,200,"Canal Creado Exitosamente",req.body));
+            } catch (error) {
+                res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
+            }
+        },
 
 
 

@@ -81,10 +81,18 @@ const clientsQueries = {
             {type: sequelize.QueryTypes.SELECT});
     },
 
+        //Alta de cliente
+        createClient: (firstname, lastname, phone, position, email, adress, city_id, porposal_interest,company_id) => {
+            return sequelize.query('INSERT INTO clients (firstname, lastname, phone, position, email, adress, city_id, porposal_interest,company_id) VALUES(?,?,?,?,?,?,?,?,?)', {
+                type: sequelize.QueryTypes.INSERT,
+                replacements: [firstname, lastname, phone, position, email, adress, city_id, porposal_interest,company_id]
+            });
+        },
  
-
-
-   
+//compañia...debe buscar por nombre.. o sea que hay que hacer un select y tiene que devolver del front el id(join con compañias)
+//region, pais, ciudad ==> seleccionar pais por region / idem ciudad por pais (ver si esta la consulta)
+// Canal de contacto==> traer nombre de canal.
+// Preferencias: traer las 3 opciones
 
  
 

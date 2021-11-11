@@ -12,5 +12,6 @@ router.delete('/deleteChannel', employeesMiddlewares.authenticateJWT, clientsMid
 router.get('/getAllContactChannels', employeesMiddlewares.authenticateJWT,contactChannel.getAllContactChannels);
 router.get('/getClientsView', employeesMiddlewares.authenticateJWT,clients.getClientsView);
 
+router.post('/addClient', employeesMiddlewares.authenticateJWT, clients.addClient);
 
 module.exports = router;
