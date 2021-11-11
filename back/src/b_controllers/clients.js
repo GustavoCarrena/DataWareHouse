@@ -64,34 +64,21 @@ const clients = {
     getClientsView: async (req, res) => {
         try {
             const getData = await clientsQueries.getClientsView();
-            const channels = await clientsQueries.getFavoriteChannelByClient()
-            const getAllDataClient = await clientsQueries.getAllDataClient()
+           
+        
+
+
+
             
-            // const allData = getData.forEach(element => {
-            //     console.log(element);
-                
-            // });
-
-            // const channel = channels.forEach(element => {
-            //     console.log({"Id":element["client_id"], "Canal Preferido":element["Canal Preferido"]});
-                
-            // });
-
-
-
-            const getAllDataClient2 = getAllDataClient.forEach(element => {
-                console.log(element);
-                
-            });
-
-
-
 
             res.status(200).send(new Response(false, 200, "Consulta exitosa", getData));
         } catch (error) {
             res.status(400).send(new Response(true, 400, "No se puede obtener la consulta", error));
         }
     },
+
+
+    
 
 
 
