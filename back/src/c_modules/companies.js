@@ -6,7 +6,7 @@ const {companiesMiddlewares} = require('../middlewares/local_middlewares/compani
 // const {regionsMiddlewares} = require('../middlewares/local_middlewares/regions');
 
 router.get('/getAllCompaniesData', employeesMiddlewares.authenticateJWT,companies.getAllCompaniesData);
-router.get('/addCompany', employeesMiddlewares.authenticateJWT, companiesMiddlewares.dataValidateInsertCompany, companies.addCompany);
+router.post('/addCompany', employeesMiddlewares.authenticateJWT, companiesMiddlewares.dataValidateInsertCompany, companies.addCompany);
 router.put('/updateCompany', employeesMiddlewares.authenticateJWT, companiesMiddlewares.validateDataCompanyById, companies.updateCompany);
 router.delete('/deleteCompany', employeesMiddlewares.authenticateJWT, companiesMiddlewares.validateDataDeleteCompany,companies.deleteCompany);
 

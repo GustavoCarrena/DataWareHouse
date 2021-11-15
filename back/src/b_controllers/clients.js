@@ -78,18 +78,38 @@ const clients = {
     },
 
 
-        // Creación de canal
+        // Alta de cliente
         addClient: async (req,res) => {
             try {
                 const {firstname, lastname, phone, position, email, adress, city_id, porposal_interest,company_id} = req.body;
                 await clientsQueries.createClient(firstname, lastname, phone, position, email, adress, city_id, porposal_interest,company_id);
-                res.status(200).send(new Response (false,200,"Canal Creado Exitosamente",req.body));
+                res.status(200).send(new Response (false,200,"Empleado Creado Exitosamente",req.body));
             } catch (error) {
                 res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
             }
         },
 
+        // Modificar datos de cliente
+        updateClient: async (req,res) => {
+            try {
+                const {id,firstname, lastname, phone, position, email, adress, city_id, porposal_interest,company_id} = req.body;
+                await clientsQueries.updateClient(id,firstname, lastname, phone, position, email, adress, city_id, porposal_interest,company_id);
+                res.status(200).send(new Response (false,200,"Empleado Actualizado Exitosamente",req.body));
+            } catch (error) {
+                res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
+            }
+        },        
 
+            //Eliminación de canal
+    deleteClient: async (req,res) => {
+        try {
+            const {id} = req.body;
+            await contactChannelQueries.deleteChannelById(id);
+            res.status(200).send(new Response (false,200,"Canal Eliminado Exitosamente",req.body.id))
+        } catch (error) {
+            res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
+        }
+    },
 
 };
 

@@ -55,46 +55,56 @@ const contactChannelQueries = {
 };
 
 
-
 const clientsQueries = {
 
     //Consulta de vista de contactos. El resultado muestra solo los canales favoritos
     getClientsView: () => {
         return sequelize.query(
             `SELECT  cl.id AS client_id, concat(cl.firstname,' ' ,cl.lastname) AS fullname,cl.email,co.country_name,re.region_name,
-            com.company_name, cl.position, group_concat(COALESCE (ch.channel_description,'')SEPARATOR ' ') AS canal_preferido, 
-            cl.porposal_interest
+            com.company_name, cl.position, group_concat(ch.channel_description,''SEPARATOR '-') AS canal_preferido, 
+            cl.porposal_id
             FROM clients cl
-            INNER JOIN cities ci
+            JOIN cities ci
             ON (ci.id = cl.city_id)
-            INNER JOIN countries co
+            JOIN countries co
             ON (co.id = ci.country_id)
-            INNER JOIN regions re
+            JOIN regions re
             ON(re.id = co.region_id)
-            INNER JOIN companies com
+            JOIN companies com
             ON(com.id = cl.company_id)
-            INNER JOIN contact_channel coch
+            JOIN client_contact coch
             ON (coch.client_id = cl.id)
-            LEFT OUTER JOIN channel ch
-            ON (ch.id = coch.channel_id AND coch.preference = 'Canal favorito')
-   			GROUP BY cl.id`, 
+            LEFT JOIN channel ch
+            ON (ch.id = coch.channel_id AND coch.preference_id = 1)
+   			GROUP BY cl.id`,
             {type: sequelize.QueryTypes.SELECT});
     },
 
-        //Alta de cliente
-        createClient: (firstname, lastname, phone, position, email, adress, city_id, porposal_interest,company_id) => {
-            return sequelize.query('INSERT INTO clients (firstname, lastname, phone, position, email, adress, city_id, porposal_interest,company_id) VALUES(?,?,?,?,?,?,?,?,?)', {
-                type: sequelize.QueryTypes.INSERT,
-                replacements: [firstname, lastname, phone, position, email, adress, city_id, porposal_interest,company_id]
+    //Alta de cliente
+    createClient: (firstname, lastname, phone, position, email, adress, city_id, porposal_interest,company_id) => {
+        return sequelize.query('INSERT INTO clients (firstname, lastname, phone, position, email, adress, city_id, porposal_interest,company_id) VALUES(?,?,?,?,?,?,?,?,?)', {
+            type: sequelize.QueryTypes.INSERT,
+            replacements: [firstname, lastname, phone, position, email, adress, city_id, porposal_interest,company_id]
+        });
+    },
+
+    updateClient : (id,firstname, lastname, phone, position, email, adress, city_id, porposal_interest,company_id) => {
+        return sequelize.query(
+        `UPDATE clients SET firstname = ?, lastname = ?, phone = ?, position = ?,email = ?, adress = ?, city_id = ?, porposal_interest = ?, company_id = ?
+        WHERE id = ?    `,
+        {
+            type: sequelize.QueryTypes.PUT,
+            replacements: [firstname, lastname, phone, position, email, adress, city_id, porposal_interest,company_id, id]
+        });
+    },
+
+        //Elminar canal
+        deleteClientById : (id) => {
+            return sequelize.query(`DELETE FROM clients WHERE id = ?`, {
+                type: sequelize.QueryTypes.DELETE,
+                replacements: [id]
             });
         },
- 
-//compañia...debe buscar por nombre.. o sea que hay que hacer un select y tiene que devolver del front el id(join con compañias)
-//region, pais, ciudad ==> seleccionar pais por region / idem ciudad por pais (ver si esta la consulta)
-// Canal de contacto==> traer nombre de canal.
-// Preferencias: traer las 3 opciones
-
- 
 
 
     

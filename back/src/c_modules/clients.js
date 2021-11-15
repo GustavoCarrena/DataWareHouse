@@ -13,5 +13,7 @@ router.get('/getAllContactChannels', employeesMiddlewares.authenticateJWT,contac
 router.get('/getClientsView', employeesMiddlewares.authenticateJWT,clients.getClientsView);
 
 router.post('/addClient', employeesMiddlewares.authenticateJWT, clients.addClient);
+router.get('/updateClient', employeesMiddlewares.authenticateJWT, clients.updateClient);
+
 
 module.exports = router;

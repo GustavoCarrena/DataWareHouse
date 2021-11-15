@@ -10,7 +10,6 @@ const employeesMiddlewares = {
     dataFillValidate:  (req, res, next) => {
         const employeeData = req.body.firstname && req.body.lastname && req.body.email && req.body.role_id &&req.body.user_pass;
         const alphanumericValidation = /[A-Za-z0-9]/i;
-        
         !employeeData ? res.status(400).send(new Response(true, 400, "No se pudo registrar el empleado", "Todos los campos deben contener datos")):
         alphanumericValidation.test(req.body.firstname) === false || alphanumericValidation.test(req.body.lastname) === false || alphanumericValidation.test(req.body.user_pass) === false
         ? res.status(400).send(new Response(true, 400, "No se pudo registrar el empleado. Todos los campos deben contener datos y el formato debe ser alfanumerico", "")):
@@ -92,11 +91,14 @@ const employeesMiddlewares = {
         emailValidation.test(req.body.email) === false ?
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. Formato inválido del email", req.body.email)):
 
+        req.body.role_id !== 'ADMI' && req.body.role_id !== 'USER' ?
+        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. El Perfil debe ser ADMI o USER",req.body.role_id)):
+
         alphanumericValidation.test(req.body.user_pass) == false ?
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. La contraseña debe contener caracteres alfanumericos y no puede estar vacía", "")):
 
         next();
-    },
+    },//ok
 
     employeeDeleteValidate: async (req, res, next) => {
         const {id} = req.body;

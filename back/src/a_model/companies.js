@@ -12,11 +12,11 @@ const companiesQueries = {
             cy.id AS country_id, cy.country_name,
             re.id AS region_id, re.region_name
             FROM companies co
-            INNER JOIN cities ci
+            LEFT JOIN cities ci
             ON (co.city_id = ci.id)
-            INNER JOIN countries cy
+            LEFT JOIN countries cy
             ON (ci.country_id = cy.id)
-            INNER JOIN regions re
+            LEFT JOIN regions re
             ON (cy.region_id = re.id)         
             `, 
             {type: sequelize.QueryTypes.SELECT});

@@ -63,6 +63,25 @@ const clientsMiddlewares = {
         next();
         },
 
+            //Validaciones para alta de cliente
+    dataValidateCreateClient: async (req, res, next) => {
+    
+        const {firstname, lastname, phone, position, email, adress, city_id, porposal_interest,company_id} = req.body;
+        const numericValidation =  /[0-9]/i;
+        const channelyDb = await contactChannelQueries.getChannels();
+        const channelIdValidation = channelyDb.filter(chid => chid.id === req.body.id);
+
+        console.log('numericValidation==>', numericValidation.test(channelId));
+
+        typeof channelId !== 'number' || numericValidation.test(channelId) === false ?
+        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. El formato del Id del canal debe ser numérico y no puede estar vacío", "")):
+
+        channelIdValidation.length === 0 ?  
+        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. El id de canal no existe", req.body.id)):
+
+        next();
+    },
+
 };
 
 module.exports = {clientsMiddlewares};

@@ -2,20 +2,20 @@ const sequelize = require('../../database/db_conection');
 
 const employeesQueries = {
 
-    /*=== Inserción de datos en db para el Registro de Empleado ===*/
+    /*=== Registro de Empleado ===*/
     insertData: (employeeData) => {
         return sequelize.query('INSERT INTO employees (firstname, lastname, email, role_id, user_pass) VALUES(?,?,?,?,?)', {
             type: sequelize.QueryTypes.INSERT,
             replacements: employeeData
         });
-    },
+    },//ok
 
     /*=== Consulta de Id de Perfil y Descripción de perfil para que el frontend autocomplete el campo en formulario de registro de usuario ===*/
     getRoleDescription: () => {
         return sequelize.query('SELECT * FROM roles ', {
             type: sequelize.QueryTypes.SELECT
         });
-    },
+    },//ok
 
     /*=== Consulta de datos de toda la nómina de empleados ===*/
     getEmployeesData: () => {
@@ -25,18 +25,18 @@ const employeesQueries = {
         ON (e.role_id = r.id)`,{
         type: sequelize.QueryTypes.SELECT
         });
-    },
+    },//ok
     getRol: (id) => {
         return sequelize.query('SELECT role_description FROM roles WHERE id = ? ', {
             type: sequelize.QueryTypes.SELECT,
             replacements: [id]
         });
-    },
+    },//ok
     getEmployeesEmail: () => {
         return sequelize.query('SELECT email FROM employees ', {
             type: sequelize.QueryTypes.SELECT
             
-        });
+        });//ok
     },
 
     /*=== Modificacion de registros de los empleados ===*/
@@ -45,16 +45,16 @@ const employeesQueries = {
             type: sequelize.QueryTypes.UPDATE,
             replacements:id
         });
-    },
+    },//ok
 
-    /*=== Consulta datos de empleado por ID ===*/
+    /*=== Consulta datos de empleado por ID para eliminarlo ===*/
 
     getData: (id) => {
         return sequelize.query(`SELECT * FROM employees WHERE id = ?`,{
         type: sequelize.QueryTypes.SELECT,
         replacements: [id]
         });
-    },
+    },//ok
 
     /*=== eliminacion de un empleado de la base ===*/
     deleteEmployees: (data) =>{

@@ -70,26 +70,12 @@ const regionsMiddlewares = {
        /*== Condiciones de ingreso de datos para alta de Ciudades ===*/
        dataValidateInsertCity: async (req, res, next) => {
 
-        // const {id, city_name,country_id} = req.body;
-        
-        const id = req.body.id;
         const city_name = req.body.city_name;
         const country_id = req.body.country_id;
-        
-        
         const getCityAllData = await regionsQueries.getAllCities()
         const countryId = await regionsQueries.getAllCountries()
-
-        const findId = getCityAllData.map(ci => ci.id).find(ciid => ciid == id);
         const findName = getCityAllData.map(ci => ci.city_name).find(name => name == city_name);
         const findCountry = countryId.map(r => r.id).find(r => r == country_id);
-        
-        (typeof(id) !== "number" || typeof(city_name) !== "string" || typeof(country_id) !== "string" || country_id !== country_id.toUpperCase()) ? 
-        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación", `Alguno de los formatos requeridos para los datos ingresados no es válido`)):
-
-
-        findId !== undefined ? 
-        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación", `El Id de la Ciudad ${req.body.id} ya se encuentra registrado`)):
         
         findName!== undefined ? 
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación", `El Nombre de la Ciudad ${req.body.city_name} ya se encuentra registrado`)):
@@ -97,10 +83,10 @@ const regionsMiddlewares = {
         findCountry === undefined ? 
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación", `El Id del País ${country_id} no existe. Toda Ciudad debe estar asociada a un País`)): 
 
-        (req.body['id'].length === 0|| req.body['city_name'].length === 0||req.body['country_id'].length === 0) ? 
+        (req.body['city_name'].length === 0||req.body['country_id'].length === 0) ? 
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación", `Debe ingresar todos los datos`)):
         
-        (req.body['id'] === " "||  req.body['city_name'] === " "||req.body['country_id'] === " ") ? 
+        (req.body['city_name'] === " "||req.body['country_id'] === " ") ? 
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación", `No puede insertar un caracter vacío`)):       
         
         
@@ -132,6 +118,7 @@ const regionsMiddlewares = {
         next();
     },
 
+
     /*== Condiciones de ingreso de datos para actualización de Paises ===*/
     dataValidateUpdateCountry: async (req, res, next) => {
         
@@ -161,6 +148,10 @@ const regionsMiddlewares = {
 
         next();
     },
+
+
+
+
 
     /*== Condiciones de ingreso de datos para actualización de Ciudades ===*/
     dataValidateUpdateCity: async (req, res, next) => {
@@ -218,8 +209,8 @@ const regionsMiddlewares = {
 
         (countryAndCities === undefined && onlyCountries === undefined && regionExist === undefined) ? // Si tiene esta combinación, no existe la region
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. La región que desea eliminar no existe",req.body.id)):
-        getCountryByRegion.length !== 0 && findCountryId !== undefined ?
-        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. Debe eliminar los siguientes Países y Ciudades dependientes antes de poder ejecutar esta tarea",getCountryByRegion)):
+        // getCountryByRegion.length !== 0 && findCountryId !== undefined ?
+        // res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. Debe eliminar los paises asociados a esta Región o modificar el código de Región del País antes de poder ejecutar esta tarea",getCountryByRegion)):
         
         next()
 
@@ -247,8 +238,8 @@ const regionsMiddlewares = {
 
         validateCountryDb === undefined ? 
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. El País que desea eliminar no existe",req.body.id)):
-        getcityId.length !== 0 ?
-        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. El País tiene ciudades asociadas",getCitiesByCountry)):
+        // getcityId.length !== 0 ?
+        // res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. El País tiene ciudades asociadas. Debe modificar el código de País (o eliminarlo) en las siguientes ciudades asociadas",getCitiesByCountry)):
 
         next()
     },

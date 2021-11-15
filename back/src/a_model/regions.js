@@ -10,12 +10,12 @@ const regionsQueries = {
             `
             SELECT r.id AS region_id, r.region_name, co.id AS country_id, co.country_name, ci.id city_id, ci.city_name
             FROM regions r
-            INNER JOIN countries co
+            LEFT JOIN countries co
             ON (r.id = co.region_id)
-            INNER JOIN cities ci
+            LEFT JOIN cities ci
             ON (ci.country_id = co.id)
             GROUP BY ci.id
-            ORDER BY r.id           
+            ORDER BY r.id
             `, 
             {type: sequelize.QueryTypes.SELECT});
     },
@@ -87,7 +87,7 @@ const regionsQueries = {
         });
     },
 
-    //Editar País
+    // //Editar País
     updateCountryById : ( id,region_id,country_name) => {
         return sequelize.query('UPDATE countries SET country_name = ?, region_id = ? WHERE id = ? ', {
             type: sequelize.QueryTypes.PUT,
@@ -129,11 +129,11 @@ const regionsQueries = {
 
     getAllCitiesData: () => {
         return sequelize.query(
-            `  SELECT ci.id AS city_id, ci.city_name, ci.country_id, co.country_name, co.region_id, re.region_name
+            `  SELECT ci.id AS city_id, ci.city_name, ci.country_id, co.country_name, re.id AS region_id, re.region_name
             FROM cities ci
-            INNER JOIN countries co
+            LEFT JOIN countries co
             ON (ci.country_id = co.id)
-            INNER JOIN regions re
+            LEFT JOIN regions re
             ON (co.region_id = re.id)
             ORDER BY ci.id `, 
             {type: sequelize.QueryTypes.SELECT});
@@ -141,7 +141,7 @@ const regionsQueries = {
 
 
     createCity: (countryData) => {
-        return sequelize.query('INSERT INTO cities (id,city_name, country_id) VALUES(?,?,?)', {
+        return sequelize.query('INSERT INTO cities (city_name, country_id) VALUES(?,?)', {
             type: sequelize.QueryTypes.INSERT,
             replacements: countryData
         });
@@ -155,7 +155,7 @@ const regionsQueries = {
         });
     },
 
-    //Elminar País
+    //Elminar Ciudad
     deleteCityById : (id ) => {
         return sequelize.query(`DELETE FROM cities WHERE id = ?`, {
             type: sequelize.QueryTypes.DELETE,
