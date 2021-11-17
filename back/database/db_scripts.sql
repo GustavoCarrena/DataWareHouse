@@ -126,8 +126,6 @@ PRIMARY KEY (id),
 FOREIGN KEY(city_id) REFERENCES cities(id) ON DELETE SET NULL ON UPDATE CASCADE 
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-
-
 INSERT INTO companies (company_name, city_id, company_address, email, phone) VALUES
 ('Empresa1', 35, 'Direccion1', 'empresa1@gmail.com', '111-1111'),
 ('Empresa2', 41, 'Direccion2', 'empresa2@gmail.com', '222-2222'),
@@ -168,72 +166,25 @@ PRIMARY KEY (id)
 INSERT INTO clients (firstname, lastname, position, email, clientAddress, city_id, porposal_id, company_id) VALUES
 ('NombreCliente1', 'ApellidoCliente1', 'Analista', 'cliente1@outlook.com', 'DireccionCliente1', 35,3, 6),
 ('NombreCliente2', 'ApellidoCliente2', 'Ingeniero', 'cliente2@outlook.com', 'DireccionCliente2', 41,4, 1),
-('NombreCliente3', 'ApellidoCliente3', 'Ingeniero', 'cliente3@outlook.com', 'DireccionCliente3', 40,1, 1),
-('NombreCliente4', 'ApellidoCliente4', 'Analista', 'cliente4@outlook.com', 'DireccionCliente4', 9,4, 2),
-('NombreCliente5', 'ApellidoCliente5', 'Arquitecto', 'cliente5@outlook.com', 'DireccionCliente5', 51,5, 3),
-('NombreCliente6', 'ApellidoCliente6', 'Analista', 'cliente6@outlook.com', 'DireccionCliente6', 35,3, 5),
-('NombreCliente7', 'ApellidoCliente7', 'Arquitecto', 'cliente7@outlook.com', 'DireccionCliente7', 40,1, 6),
-('NombreCliente8', 'ApellidoCliente8', 'Analista', 'cliente8@outlook.com', 'DireccionCliente8', 51,1, 1),
-('NombreCliente9', 'ApellidoCliente9', 'Ingeniero', 'cliente9@outlook.com', 'DireccionCliente9', 9,3, 3),
-('NombreCliente10', 'ApellidoCliente10', 'Arquitecto', 'cliente10@outlook.com', 'DireccionCliente10', 40,5, 6),
-('NombreCliente11', 'ApellidoCliente11', 'Analista', 'cliente11@outlook.com', 'DireccionCliente11',41 ,4, 4),
-('NombreCliente12', 'ApellidoCliente12', 'Arquitecto', 'cliente12@outlook.com', 'DireccionCliente12', 35,3, 6);
-
-CREATE TABLE channel (
-id INT UNSIGNED NOT NULL,
-channel_description VARCHAR(50) NOT NULL,
-PRIMARY KEY(id)
-)ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-INSERT INTO channel (id,channel_description) VALUES
-(1,'Telefono'),
-(2,'Whatsapp'),
-(3,'Instagram'),
-(4,'Linkedin'),
-(5,'Facebook');
-
-CREATE TABLE preference (
-id INT UNSIGNED NOT NULL,
-preference_description VARCHAR(50) NOT NULL,
-PRIMARY KEY(id)
-)ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-INSERT INTO preference (id,preference_description) VALUES
-(1,'Canal Favorito'),
-(2,'Sin Preferencia'),
-(3,'No Molestar');
+('NombreCliente3', 'ApellidoCliente3', 'Ingeniero', 'cliente3@outlook.com', 'DireccionCliente3', 40,1, 1);
 
 CREATE TABLE client_contact (
 id INT UNSIGNED NOT NULL AUTO_INCREMENT,
 client_id INT UNSIGNED NOT NULL,
-channel_id INT UNSIGNED NOT NULL,
-account VARCHAR(255) NOT NULL,
-preference_id INT UNSIGNED NOT NULL,
+whatsapp_channel ENUM('Whatsapp'),
+whatsapp_account VARCHAR(255) NOT NULL,
+whatsapp_preference ENUM('Canal Favorito','Sin Preferencia','No Molestar'),
+instagram_channel ENUM('Instagram'),
+instagram_account VARCHAR(255) NOT NULL,
+instagram_preference ENUM('Canal Favorito','Sin Preferencia','No Molestar'),
 FOREIGN KEY(client_id) REFERENCES clients(id) ON DELETE CASCADE ON UPDATE CASCADE,
-FOREIGN KEY(channel_id) REFERENCES channel(id),
-FOREIGN KEY(preference_id) REFERENCES preference(id),
 PRIMARY KEY(id)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO client_contact (client_id, channel_id, account, preference_id) VALUES
-(1, 2, '4321-4321', 3),
-(1, 4, 'https://www.linkedin.com/in/cliente1',2),
-(2, 3, '@cliente2',2),
-(2, 5, 'cliente2',3),
-(3, 1, '432-4324',1),
-(3, 5, 'cliente3',1),
-(4, 2, '432-4322',3),
-(4, 1, '123-1234',1),
-(5, 1, '123-1234',1),
-(5, 3, '@cliente5',2),
-(6, 2, '4323-4323',2),
-(7, 2, '4323-4323',2),
-(8, 2, '4323-4323',2),
-(9, 2, '4323-4323',2),
-(9, 4, 'https://www.linkedin.com/in/cliente9',1),
-(10, 4, 'https://www.linkedin.com/in/cliente10',3),
-(11, 4, 'https://www.linkedin.com/in/cliente11',1),
-(12, 4, 'https://www.linkedin.com/in/cliente12',2);
+INSERT INTO client_contact (client_id, whatsapp_channel, whatsapp_account, whatsapp_preference,instagram_channel,instagram_account,instagram_preference) VALUES
+(1, 'Whatsapp', '4321-4321', 'Canal Favorito', 'Instagram', '@instagram1','Sin Preferencia'),
+(2, 'Whatsapp', '111-1111','No Molestar','Instagram', '@instagram2','Sin Preferencia'),
+(3, 'Whatsapp', '222-2222','Sin Preferencia', 'Instagram', '@Instagram','Canal Favorito');
 
 CREATE TABLE roles (
 id CHAR(4) NOT NULL,

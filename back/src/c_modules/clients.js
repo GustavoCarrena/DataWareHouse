@@ -1,19 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const {contactChannel, clients} = require('../b_controllers/clients');
+const {clients} = require('../b_controllers/clients');
 const {employeesMiddlewares} = require('../middlewares/local_middlewares/employees');
 const {clientsMiddlewares} = require('../middlewares/local_middlewares/clients');
 
-router.get('/getChannels', employeesMiddlewares.authenticateJWT,contactChannel.getChannelsData);
-router.post('/addChannel', employeesMiddlewares.authenticateJWT, clientsMiddlewares.dataValidateInsertChannel,contactChannel.addChannel);
-router.put('/updateChannel', employeesMiddlewares.authenticateJWT, clientsMiddlewares.dataValidateUpdateChannel,contactChannel.updateChannel);
-router.delete('/deleteChannel', employeesMiddlewares.authenticateJWT, clientsMiddlewares.dataValidateDeleteChannel,contactChannel.deleteChannel);
-
-router.get('/getAllContactChannels', employeesMiddlewares.authenticateJWT,contactChannel.getAllContactChannels);
-router.get('/getClientsView', employeesMiddlewares.authenticateJWT,clients.getClientsView);
-
-router.post('/addClient', employeesMiddlewares.authenticateJWT, clients.addClient);
-router.get('/updateClient', employeesMiddlewares.authenticateJWT, clients.updateClient);
+router.post('/addClient', employeesMiddlewares.authenticateJWT, clientsMiddlewares.dataValidateCreateClient,clients.addClient);//ok
+router.get('/getPorposalInterestData', employeesMiddlewares.authenticateJWT,clients.getPorposalInterestData);//ok
+router.get('/getClientsView', employeesMiddlewares.authenticateJWT,clients.getClientsView);//ok
+// router.get('/updateClientView', employeesMiddlewares.authenticateJWT, clients.updateClientView);
+router.put('/updateClient', employeesMiddlewares.authenticateJWT, clients.updateClient);
 
 
 module.exports = router;

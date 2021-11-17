@@ -68,8 +68,8 @@ const regions = {
         try {
             const {region_id} = req.body;
             const getData = await regionsQueries.getCountriesByRegion(region_id);
-            const city = getData.find(c => {return c.region_id === region_id});
-            city ? res.status(200).send(new Response(false, 200, "Consulta exitosa", getData))
+            const region = getData.find(c => {return c.region_id === region_id});
+            region ? res.status(200).send(new Response(false, 200, "Consulta exitosa", getData))
             : res.status(400).send(new Response(true, 400, "No existe el código de Región ingresado", `Código ingresado: ${region_id}`));
         } catch (error) {
             res.status(500).send(new Response(true, 500, "Error interno del servidor", ""));
