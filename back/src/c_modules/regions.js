@@ -4,21 +4,25 @@ const {regions} = require('../b_controllers/regions');
 const {employeesMiddlewares} = require('../middlewares/local_middlewares/employees');
 const {regionsMiddlewares} = require('../middlewares/local_middlewares/regions');
 
-router.get('/getAllRegionsData', employeesMiddlewares.authenticateJWT,regions.getAllData);//Consulta de todas las regiones con sus paises y ciudades de esos paises
-router.get('/getRegionsData', employeesMiddlewares.authenticateJWT,regions.getRegionsData);//Consulta de Id y Nombre de las Regiones
-router.get('/getAllCountries', employeesMiddlewares.authenticateJWT,regions.getAllCountryData);//Consulta de todos los paises con su region asociada
-router.get('/getCountriesData', employeesMiddlewares.authenticateJWT,regionsMiddlewares.dataFillCountryValidate, regions.getCountriesData);//Consulta de paises por id de region
-router.get('/getCitiesData', employeesMiddlewares.authenticateJWT,regionsMiddlewares.dataFillCityValidate,regions.getCitiesData);//Consulta de ciudades por Id de Pais
-router.get('/getAllCities', employeesMiddlewares.authenticateJWT,regions.getAllCityData);//Consulta de todas las ciudades con su pais y region asociada
-router.post('/createRegion', employeesMiddlewares.authenticateJWT, regionsMiddlewares.dataValidateInsertRegion, regions.addRegion);
-router.post('/addCountry', employeesMiddlewares.authenticateJWT, regionsMiddlewares.dataValidateInsertCountry,regions.addCountry);
-router.post('/addCity', employeesMiddlewares.authenticateJWT, regionsMiddlewares.dataValidateInsertCity, regions.addCity);
-router.put('/updateRegion', employeesMiddlewares.authenticateJWT, regionsMiddlewares.dataValidateUpdateRegion, regions.updateRegion);
-router.put('/updateCountry', employeesMiddlewares.authenticateJWT, regionsMiddlewares.dataValidateUpdateCountry,regions.updateCountry);
-router.put('/updateCity', employeesMiddlewares.authenticateJWT, regionsMiddlewares.dataValidateUpdateCity,regions.updateCity);
-router.delete('/deleteRegion', employeesMiddlewares.authenticateJWT, regionsMiddlewares.dataValidateDeleteRegion,regions.deleteRegion);
-router.delete('/deleteCountry', employeesMiddlewares.authenticateJWT, regionsMiddlewares.dataValidateDeleteCountry, regions.deleteCountry);
-router.delete('/deleteCity', employeesMiddlewares.authenticateJWT, regionsMiddlewares.dataValidateDeleteCity, regions.deleteCity);
+router.get('/getAllRegionsData', employeesMiddlewares.authenticateJWT,regions.getAllData);//ok
+router.get('/getCountriesData/:region_id', employeesMiddlewares.authenticateJWT,regionsMiddlewares.dataFillCountryValidate, regions.getCountriesData);//ok!!!
+
+router.post('/createRegion', employeesMiddlewares.authenticateJWT, regionsMiddlewares.dataValidateInsertRegion, regions.addRegion);//ok
+router.post('/addCountry/:region_id', employeesMiddlewares.authenticateJWT, regionsMiddlewares.dataValidateInsertCountry,regions.addCountry);
+router.post('/addCity/:id', employeesMiddlewares.authenticateJWT, regionsMiddlewares.dataValidateInsertCity, regions.addCity);//ok
+
+router.put('/updateRegion/:id', employeesMiddlewares.authenticateJWT, regionsMiddlewares.dataValidateUpdateRegion, regions.updateRegion);//ok
+router.put('/updateCountry/:id', employeesMiddlewares.authenticateJWT, regionsMiddlewares.dataValidateUpdateCountry,regions.updateCountry);//ok
+router.put('/updateCity/:id', employeesMiddlewares.authenticateJWT, regionsMiddlewares.dataValidateUpdateCity,regions.updateCity);//ok
+
+router.delete('/deleteRegion/:id', employeesMiddlewares.authenticateJWT, regionsMiddlewares.dataValidateDeleteRegion,regions.deleteRegion);//ok
+router.delete('/deleteCountry/:id', employeesMiddlewares.authenticateJWT, regionsMiddlewares.dataValidateDeleteCountry, regions.deleteCountry);//ok
+router.delete('/deleteCity/:id', employeesMiddlewares.authenticateJWT, regionsMiddlewares.dataValidateDeleteCity, regions.deleteCity);//ok
+
+router.get('/getRegionsData', employeesMiddlewares.authenticateJWT,regions.getRegionsData);//ok
+router.get('/getAllCountries', employeesMiddlewares.authenticateJWT,regions.getAllCountryData);//ok
+router.get('/getCitiesData/:country_id', employeesMiddlewares.authenticateJWT,regionsMiddlewares.dataFillCityValidate,regions.getCitiesData);//ok
+router.get('/getAllCities', employeesMiddlewares.authenticateJWT,regions.getAllCityData);//ok
 
 
 

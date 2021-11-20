@@ -42,13 +42,13 @@ const companiesMiddlewares = {
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. La ciudad asociada no existe", req.body.city_id)):
 
         next();
-    },
+    },//Ok!!!
 
 
     validateDataCompanyById: async (req, res, next) => {
         
-        const id = req.body.id; 
-        const company_name = req.body.company_name; 
+        const id = parseInt(req.params.id);
+        const company_name = req.body.company_name;
         const city_id = req.body.city_id;
         const company_address = req.body.company_address;
         const email = req.body.email;
@@ -75,21 +75,18 @@ const companiesMiddlewares = {
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. El formato de del telefono no puede ser inferior a 7 caracteres", "")):
 
         companyIdValidation.length === 0 ?  
-        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. El id de la compañia no existe", id)):
+        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. El id de la compañia no existe", "")):
         cityValidation.length === 0 ?  
-        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. La ciudad asociada no existe", req.body.city_id)):
+        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. La ciudad asociada no existe", "")):
 
         next();
-    },
+    },//ok!!!
 
     validateDataDeleteCompany: async (req, res, next) => {
         
-        const id = req.body.id; 
-
+        const id = parseInt(req.params.id);
         const companyDb = await companiesQueries.getAllDataCompanies();
         const companyIdValidation = companyDb.filter(co => co.id === id);
-
-        console.log('companyIdValidation===>', companyIdValidation);
 
         typeof id !== 'number' || id === " " ||  id.toString().length === 0 ?
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. El formato de nombre del Id de la compañia debe ser numérico no puede estar vacío", "")):
@@ -98,7 +95,7 @@ const companiesMiddlewares = {
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. El id de la compañia no existe", id)):
 
         next();
-    },
+    },//ok!!!
 
 };
 

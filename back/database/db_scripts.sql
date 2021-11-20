@@ -171,10 +171,8 @@ INSERT INTO clients (firstname, lastname, position, email, clientAddress, city_i
 CREATE TABLE client_contact (
 id INT UNSIGNED NOT NULL AUTO_INCREMENT,
 client_id INT UNSIGNED NOT NULL,
-whatsapp_channel ENUM('Whatsapp'),
 whatsapp_account VARCHAR(255) NOT NULL,
 whatsapp_preference ENUM('Canal Favorito','Sin Preferencia','No Molestar'),
-instagram_channel ENUM('Instagram'),
 instagram_account VARCHAR(255) NOT NULL,
 instagram_preference ENUM('Canal Favorito','Sin Preferencia','No Molestar'),
 FOREIGN KEY(client_id) REFERENCES clients(id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -182,9 +180,9 @@ PRIMARY KEY(id)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO client_contact (client_id, whatsapp_channel, whatsapp_account, whatsapp_preference,instagram_channel,instagram_account,instagram_preference) VALUES
-(1, 'Whatsapp', '4321-4321', 'Canal Favorito', 'Instagram', '@instagram1','Sin Preferencia'),
-(2, 'Whatsapp', '111-1111','No Molestar','Instagram', '@instagram2','Sin Preferencia'),
-(3, 'Whatsapp', '222-2222','Sin Preferencia', 'Instagram', '@Instagram','Canal Favorito');
+(1, '4321-4321', 'Canal Favorito', 'Instagram', '@instagram1','Sin Preferencia'),
+(2, '111-1111','No Molestar','Instagram', '@instagram2','Sin Preferencia'),
+(3, '222-2222','Sin Preferencia', 'Instagram', '@Instagram','Canal Favorito');
 
 CREATE TABLE roles (
 id CHAR(4) NOT NULL,

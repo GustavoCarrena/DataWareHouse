@@ -33,12 +33,12 @@ const clientsQueries = {
     },//ok!!!!
 
     //Alta de cliente - tabla client_conctact
-    createContact: (client_id,whatsapp_channel, whatsapp_account, whatsapp_preference,instagram_channel,instagram_account,instagram_preference) => {
+    createContact: (client_id, whatsapp_account, whatsapp_preference,instagram_account,instagram_preference) => {
         return sequelize.query(`
-        INSERT INTO client_contact (client_id,whatsapp_channel, whatsapp_account, whatsapp_preference,instagram_channel,instagram_account,instagram_preference) 
-            VALUES(?,?,?,?,?,?,?)`, {
+        INSERT INTO client_contact (client_id, whatsapp_account, whatsapp_preference,instagram_account,instagram_preference) 
+            VALUES(?,?,?,?,?)`, {
             type: sequelize.QueryTypes.INSERT,
-            replacements: [client_id,whatsapp_channel, whatsapp_account, whatsapp_preference,instagram_channel,instagram_account,instagram_preference]
+            replacements: [client_id, whatsapp_account, whatsapp_preference,instagram_account,instagram_preference]
         });
     },//ok!!!!
 
@@ -57,27 +57,65 @@ const clientsQueries = {
         });
     },//ok!!!!
 
-
-    
-    
-    updateClient : (id,firstname, lastname, phone, position, email, adress, city_id, porposal_interest,company_id) => {
+    //Vista para editar datos
+    getUpdateClientsView: (id) => {
         return sequelize.query(
-        `UPDATE clients SET firstname = ?, lastname = ?, phone = ?, position = ?,email = ?, adress = ?, city_id = ?, porposal_interest = ?, company_id = ?
-        WHERE id = ?    `,
+            `SELECT  cl.firstname, cl.lastname, cl.position, cl.email, com.company_name, 
+            re.region_name, co.country_name, ci.city_name, cl.clientAddress, por.porposal_description, 
+            clcon.whatsapp_account, clcon.whatsapp_preference, 
+            clcon.instagram_account, clcon.instagram_preference
+            FROM clients cl
+            LEFT JOIN companies com
+            ON (com.id = cl.company_id)
+            LEFT JOIN cities ci
+            ON (ci.id = cl.city_id)
+            LEFT JOIN countries co
+            ON (co.id = ci.country_id)
+            LEFT JOIN regions re
+            ON(re.id = co.region_id)
+            LEFT JOIN porposal_interest por
+            ON(por.id = cl.porposal_id)
+            LEFT JOIN client_contact clcon
+            ON(clcon.client_id = cl.id)
+            WHERE cl.id = ?`,
+            {type: sequelize.QueryTypes.SELECT,replacements: [id]});
+    },//ok!!!
+    
+    //Lista datos de los clientes (para validaciones middlewares)
+    getClientsIdEmail: () => {
+        return sequelize.query(
+            `SELECT id,email FROM clients ORDER BY id`,
+            {type: sequelize.QueryTypes.SELECT});
+    },//ok!!!
+
+    // Actualizar datos del cliente (tabla clients)
+    updateClientDb : (firstname, lastname, position, email, company_id, city_id, clientAddress, porposal_id, id ) => {
+        return sequelize.query(
+        `UPDATE clients SET firstname = ?, lastname = ?, position = ?,email = ?, company_id = ?, city_id = ?, clientAddress = ?, porposal_id = ?
+        WHERE id = ?`,
         {
             type: sequelize.QueryTypes.PUT,
-            replacements: [firstname, lastname, phone, position, email, adress, city_id, porposal_interest,company_id, id]
+            replacements: [firstname, lastname, position, email, company_id, city_id, clientAddress,porposal_id,id]
+        })},
+
+    // Actualizar datos del cliente (tabla client_contact)
+    updateClientContactDb : (whatsapp_account, whatsapp_preference, instagram_account, instagram_preference, client_id ) => {
+        return sequelize.query(
+        `UPDATE client_contact SET  whatsapp_account = ?, whatsapp_preference = ?, instagram_account = ?, instagram_preference = ?
+        WHERE client_id = ?    `,
+        {
+            type: sequelize.QueryTypes.PUT,
+            replacements: [whatsapp_account, whatsapp_preference, instagram_account, instagram_preference, client_id]
         });
     },
 
-        //Elminar canal
-        deleteClientById : (id) => {
-            return sequelize.query(`DELETE FROM clients WHERE id = ?`, {
-                type: sequelize.QueryTypes.DELETE,
-                replacements: [id]
-            });
-        },
-
+    //Elminar cliente por Id
+    deleteClientById : (id) => {
+        return sequelize.query(`DELETE FROM clients WHERE id = ?`, {
+            type: sequelize.QueryTypes.DELETE,
+            replacements: [id]
+        });
+    },
 
     
     

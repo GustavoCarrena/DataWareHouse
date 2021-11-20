@@ -18,20 +18,7 @@ const regionsQueries = {
             ORDER BY r.id
             `, 
             {type: sequelize.QueryTypes.SELECT});
-    },
-
-    //Consulta de id y de nombre de regiones
-    getRegions: () => {
-        return sequelize.query(
-            'SELECT * FROM regions;', 
-            {type: sequelize.QueryTypes.SELECT});
-    },
-
-    getRegionName: () => {
-        return sequelize.query(
-            'SELECT region_name FROM regions;', 
-            {type: sequelize.QueryTypes.SELECT});
-    },
+    },//ok!!!
 
     //Alta de Región
     createRegion: (regionData) => {
@@ -39,7 +26,21 @@ const regionsQueries = {
             type: sequelize.QueryTypes.INSERT,
             replacements: [regionData]
         });
-    },
+    },//ok!!!
+
+    //Consulta de id y de nombre de regiones
+    getRegions: () => {
+        return sequelize.query(
+            'SELECT * FROM regions;', 
+            {type: sequelize.QueryTypes.SELECT});
+    },//ok!!!
+
+    getRegionName: () => {
+        return sequelize.query(
+            'SELECT region_name FROM regions;', 
+            {type: sequelize.QueryTypes.SELECT});
+    },//ok!!!
+
 
     //Editar Región
     updateRegiontById : (region_name,id ) => {
@@ -47,7 +48,7 @@ const regionsQueries = {
             type: sequelize.QueryTypes.PUT,
             replacements: [id,region_name]
         });
-    },
+    },//ok!!!
 
     //Elminar Región
     deleteRegionById : (id ) => {
@@ -55,7 +56,7 @@ const regionsQueries = {
             type: sequelize.QueryTypes.PUT,
             replacements: [id]
         });
-    },
+    },//ok!!!
 
     /*=== PAISES ===*/
 
@@ -71,13 +72,13 @@ const regionsQueries = {
                 type: sequelize.QueryTypes.SELECT,
                 replacements: [regionid]
             });
-    },
+    },//ok!!!
 
     getAllCountries: () => {
         return sequelize.query(
             `SELECT  * FROM countries`, 
             {type: sequelize.QueryTypes.SELECT});
-    },
+    },//ok!!
 
     //Alta de País
     createCountry: (countryData) => {
@@ -85,7 +86,7 @@ const regionsQueries = {
             type: sequelize.QueryTypes.INSERT,
             replacements: countryData
         });
-    },
+    },//ok!!!!
 
     // //Editar País
     updateCountryById : ( id,region_id,country_name) => {
@@ -93,7 +94,7 @@ const regionsQueries = {
             type: sequelize.QueryTypes.PUT,
             replacements: [region_id,country_name ,id]
         });
-    },
+    },//ok!!!
 
     //Elminar País
     deleteCountryById : (id ) => {
@@ -101,7 +102,7 @@ const regionsQueries = {
             type: sequelize.QueryTypes.PUT,
             replacements: [id]
         });
-    },
+    },//ok!!!
 
     /*=== CIUDADES ===*/
     
@@ -119,13 +120,13 @@ const regionsQueries = {
             type: sequelize.QueryTypes.SELECT,
             replacements: [id]
             });
-    },
+    },//ok!!!
 
     getAllCities: () => {
         return sequelize.query(
             `SELECT  * FROM cities`, 
             {type: sequelize.QueryTypes.SELECT});
-    },
+    },//ok!!!
 
     getAllCitiesData: () => {
         return sequelize.query(
@@ -137,7 +138,7 @@ const regionsQueries = {
             ON (co.region_id = re.id)
             ORDER BY ci.id `, 
             {type: sequelize.QueryTypes.SELECT});
-    },
+    },//ok!!!
 
 
     createCity: (countryData) => {
@@ -145,7 +146,7 @@ const regionsQueries = {
             type: sequelize.QueryTypes.INSERT,
             replacements: countryData
         });
-    },
+    },//ok!!!
 
     //Editar Ciudad
     updateCityById : ( id,city_name,country_id) => {
@@ -153,7 +154,7 @@ const regionsQueries = {
             type: sequelize.QueryTypes.PUT,
             replacements: [city_name, country_id,id]
         });
-    },
+    },//ok!!!!
 
     //Elminar Ciudad
     deleteCityById : (id ) => {
@@ -161,7 +162,7 @@ const regionsQueries = {
             type: sequelize.QueryTypes.DELETE,
             replacements: [id]
         });
-    },
+    },//OK!!!
 
 
 }; //fin regions

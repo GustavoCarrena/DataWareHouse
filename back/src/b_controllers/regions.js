@@ -7,12 +7,11 @@ const regions = {
     getAllData: async (req, res) => {
         try {
             const getData = await regionsQueries.getAllDataRegions();
-            console.log(getData);
             res.status(200).send(new Response(false, 200, "Consulta exitosa", getData));
         } catch (error) {
             res.status(400).send(new Response(true, 400, "No se puede obtener la consulta", ""));
         }
-    },
+    },//ok!!!
 
     /*=== REGIONES ===*/
     
@@ -24,7 +23,7 @@ const regions = {
         } catch (error) {
             res.status(400).send(new Response(true, 400, "No se puede obtener la consulta", ""));
         }
-    },
+    },//ok!!!
 
     // Creación de Región
     addRegion: async (req,res) => {
@@ -36,29 +35,30 @@ const regions = {
         } catch (error) {
             res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
         }
-    },
+    },//ok!!
 
     // Actualización de datos de Región
     updateRegion: async (req,res) => {
         try {
-            const {id,region_name} = req.body;
+            const id = parseInt(req.params.id);
+            const region_name = req.body.region_name;
             await regionsQueries.updateRegiontById(id, region_name);
             res.status(200).send(new Response (false,200,"Nombre de Región Actualizada Exitosamente",req.body))
         } catch (error) {
             res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
         }
-    },
+    },//ok!!!
 
     // Elimnación de Región
     deleteRegion: async (req,res) => {
         try {
-            const {id} = req.body;
+            const id = parseInt(req.params.id);
             await regionsQueries.deleteRegionById(id);
-            res.status(200).send(new Response (false,200,"Región Eliminada Exitosamente",req.body.id))
+            res.status(200).send(new Response (false,200,"Región Eliminada Exitosamente",""))
         } catch (error) {
             res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
         }
-    },
+    },//ok!!
 
 
     /*=== PAISES ===*/
@@ -66,15 +66,13 @@ const regions = {
     // Obetener datos de paises, seleccionados por región a la cual pertenece
     getCountriesData: async (req, res) => {
         try {
-            const {region_id} = req.body;
-            const getData = await regionsQueries.getCountriesByRegion(region_id);
-            const region = getData.find(c => {return c.region_id === region_id});
-            region ? res.status(200).send(new Response(false, 200, "Consulta exitosa", getData))
-            : res.status(400).send(new Response(true, 400, "No existe el código de Región ingresado", `Código ingresado: ${region_id}`));
+            const region_id = parseInt (req.params.region_id);
+            const getCountriesByRegion = await regionsQueries.getCountriesByRegion(region_id);
+            res.status(200).send(new Response(false, 200, "Consulta exitosa", getCountriesByRegion));
         } catch (error) {
             res.status(500).send(new Response(true, 500, "Error interno del servidor", ""));
         }
-    },
+    },//ok!!!
 
     // Lista de todos los Paises con su Región identificada
     getAllCountryData: async (req, res) => {
@@ -84,59 +82,57 @@ const regions = {
         } catch (error) {
             res.status(400).send(new Response(true, 400, "No se puede obtener la consulta", ""));
         }
-    },
+    },//ok!!!
 
     //Creación de País
     addCountry: async (req,res) => {
         try {
-            const {id, country_name, region_id} = req.body;
+            const {id, country_name} = req.body;
+            const region_id = parseInt(req.params.region_id);
             await regionsQueries.createCountry([id, country_name, region_id]);
-            res.status(200).send(new Response (false,200,"País Creado Exitosamente",{id, country_name, region_id}))
+            res.status(200).send(new Response (false,200,"País Creado Exitosamente",""))
         } catch (error) {
             res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
         }
-    },
+    },//OK!!!
 
 
 
     // Actualización de datos de País
     updateCountry: async (req,res) => {
-        const {id,country_name, region_id} = req.body;
+        const {country_name,region_id } = req.body;
+        const id = req.params.id;
         try {
             await regionsQueries.updateCountryById(id,country_name, region_id);
-            res.status(200).send(new Response (false,200,"País Actualizado Exitosamente",{id: req.body.id.toUpperCase(), country_name: req.body.country_name, region_id: req.body.region_id}))
+            res.status(200).send(new Response (false,200,"País Actualizado Exitosamente",""));
         } catch (error) {
             res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
         }
-    },
+    },//ok!!!
 
-
-
-        // Elimnación de País
-        deleteCountry: async (req,res) => {
-            try {
-                const {id} = req.body;
-                await regionsQueries.deleteCountryById(id);
-                res.status(200).send(new Response (false,200,"País Eliminado Exitosamente",req.body.id))
-            } catch (error) {
-                res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
-            }
-        },
+    // Elimnación de País
+    deleteCountry: async (req,res) => {
+        try {
+            const id = req.params.id.toUpperCase();
+            await regionsQueries.deleteCountryById(id);
+            res.status(200).send(new Response (false,200,"País Eliminado Exitosamente",""))
+        } catch (error) {
+            res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
+        }
+    },//ok!!!
 
     /*=== CIUDADES ===*/
     
     // Obetener datos de ciudades, seleccionados por pais a la cual pertenecen
     getCitiesData: async (req, res) => {
         try {
-            const {country_id} = req.body;
-            const getData = await regionsQueries.getCitiesByCountry(country_id);
-            const country = getData.find(c => {return c.country_id === country_id});
-            country ? res.status(200).send(new Response(false, 200, "Consulta exitosa", getData))
-            : res.status(400).send(new Response(true, 400, "No existe el código de País ingresado", `Código ingresado: ${country_id}`));
+            const country_id = req.params.country_id;
+            const getCitiesByCountry = await regionsQueries.getCitiesByCountry(country_id);
+            res.status(200).send(new Response(false, 200, "Consulta exitosa", getCitiesByCountry));
         } catch (error) {
             res.status(500).send(new Response(true, 500, "Error interno del servidor", ""));
         }
-    },
+    },//ok!!!
 
     // Lista de todos las ciudades con su Pais y Región
     getAllCityData: async (req, res) => {
@@ -152,37 +148,36 @@ const regions = {
     addCity: async (req,res) => {
         try {
             const city_name = req.body.city_name;
-            const country_id = req.body.country_id.toUpperCase();
-            const createCity =await regionsQueries.createCity([city_name, country_id]);
-            const cityId= createCity[0]
-            res.status(200).send(new Response (false,200,"Ciudad Creada Exitosamente",{id: cityId,city_name:city_name, country_id:country_id}))
+            const id = req.params.id.toUpperCase();
+            await regionsQueries.createCity([city_name, id]);
+            res.status(200).send(new Response (false,200,"Ciudad Creada Exitosamente",""))
         } catch (error) {
             res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
         }
-    },
+    },//ok!!
 
     // Actualización de datos de Ciudad
     updateCity: async (req,res) => {
-        const {id,city_name} = req.body;
-        const country_id = req.body.country_id.toUpperCase()
+        const {city_name,country_id} = req.body;
+        const id = parseInt(req.params.id);
         try {
             await regionsQueries.updateCityById(id,city_name, country_id);
-            res.status(200).send(new Response (false,200,"Ciudad Actualizada Exitosamente",{id: id, city_name: req.body.city_name, country_id: country_id}))
+            res.status(200).send(new Response (false,200,"Ciudad Actualizada Exitosamente",""))
         } catch (error) {
             res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
         }
-    },
+    },//ok!!!
 
     // Eliminación de Ciudad
     deleteCity: async (req,res) => {
         try {
-            const {id} = req.body;
+            const id = parseInt(req.params.id);
             await regionsQueries.deleteCityById(id);
             res.status(200).send(new Response (false,200,"Ciudad Eliminada Exitosamente",req.body.id))
         } catch (error) {
             res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
         }
-    },
+    },//ok!!
 
 }//fin de regions
 

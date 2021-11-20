@@ -28,7 +28,7 @@ const companiesQueries = {
             type: sequelize.QueryTypes.INSERT,
             replacements: [id,company_name, city_id, company_address, email, phone]
         });
-    },
+    },//ok!!
 
     //Editar Compañia
     updateCompany : (id,company_name,city_id, company_address, email, phone) => {
@@ -40,7 +40,7 @@ const companiesQueries = {
             type: sequelize.QueryTypes.PUT,
             replacements: [company_name,city_id, company_address, email, phone, id]
         });
-    },
+    },//OK!!
 
         //Elminar Compañia
         deleteCompanyById : (id ) => {
@@ -49,6 +49,6 @@ const companiesQueries = {
                 replacements: [id]
             });
         },
-};
+};//ok!!
 
 module.exports = {companiesQueries}

@@ -8,14 +8,14 @@ const employeesQueries = {
             type: sequelize.QueryTypes.INSERT,
             replacements: employeeData
         });
-    },//ok
+    },//ok!!!!
 
     /*=== Consulta de Id de Perfil y Descripción de perfil para que el frontend autocomplete el campo en formulario de registro de usuario ===*/
     getRoleDescription: () => {
         return sequelize.query('SELECT * FROM roles ', {
             type: sequelize.QueryTypes.SELECT
         });
-    },//ok
+    },//ok!!!!
 
     /*=== Consulta de datos de toda la nómina de empleados ===*/
     getEmployeesData: () => {
@@ -25,19 +25,23 @@ const employeesQueries = {
         ON (e.role_id = r.id)`,{
         type: sequelize.QueryTypes.SELECT
         });
-    },//ok
+    },//ok!!!
+
+    //Lista de Roles para formulario Front
     getRol: (id) => {
         return sequelize.query('SELECT role_description FROM roles WHERE id = ? ', {
             type: sequelize.QueryTypes.SELECT,
             replacements: [id]
         });
-    },//ok
+    },//ok!!!
+
+    // Lista de emails ya registrados para Middleware
     getEmployeesEmail: () => {
         return sequelize.query('SELECT email FROM employees ', {
             type: sequelize.QueryTypes.SELECT
             
-        });//ok
-    },
+        });
+    },//ok!!!
 
     /*=== Modificacion de registros de los empleados ===*/
     updateEmployeesData: (id) => {
@@ -45,16 +49,16 @@ const employeesQueries = {
             type: sequelize.QueryTypes.UPDATE,
             replacements:id
         });
-    },//ok
+    },//ok!!!
 
-    /*=== Consulta datos de empleado por ID para eliminarlo ===*/
+    /*=== Consulta datos de empleado por ID para baja ===*/
 
     getData: (id) => {
         return sequelize.query(`SELECT * FROM employees WHERE id = ?`,{
         type: sequelize.QueryTypes.SELECT,
         replacements: [id]
         });
-    },//ok
+    },//ok!!!
 
     /*=== eliminacion de un empleado de la base ===*/
     deleteEmployees: (data) =>{
@@ -62,7 +66,7 @@ const employeesQueries = {
             type: sequelize.QueryTypes.DELETE,
             replacements: [data]
         });
-    },
+    },//ok!!!
 
     /*=== seleccion de datos para el login de empleados===*/
     selectDataLogin: (dataLogin) => {
@@ -70,14 +74,14 @@ const employeesQueries = {
             type: sequelize.QueryTypes.SELECT,
             replacements: dataLogin
         })
-    },
+    },//ok!!
 
     selectEmployeeId: (id) => {
         return sequelize.query('SELECT id, firstname, lastname, email FROM employees WHERE id = ?', {
             type: sequelize.QueryTypes.SELECT,
             replacements: [id]
         });
-    }
+    }//ok!!
     
 
 

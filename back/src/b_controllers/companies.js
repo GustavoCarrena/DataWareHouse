@@ -20,34 +20,35 @@ const companies = {
         try {
             const {company_name, city_id, company_address, email, phone} = req.body;
             await companiesQueries.createCompany(company_name, city_id, company_address, email, phone);
-            res.status(200).send(new Response (false,200,"Compañía Creada Exitosamente",req.body));
+            res.status(200).send(new Response (false,200,"Compañía Creada Exitosamente",""));
         } catch (error) {
             res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
         }
-    },
+    },//ok!!!
 
     // Actualización de datos de las Compañías
     updateCompany: async (req,res) => {
-        const {id, company_name,city_id, company_address, email, phone} = req.body;
+        const id = parseInt(req.params.id);
+        const {company_name, city_id, company_address, email, phone} = req.body;
         try {
             await companiesQueries.updateCompany(id, company_name,city_id, company_address, email, phone);
-            res.status(200).send(new Response (false,200,"Compañia Actualizada Exitosamente",{id: id, company_name: req.body.company_name, city_id: req.body.city_id, company_address: req.body.company_address, email: req.body.email, phone: req.body.phone }))
+            res.status(200).send(new Response (false,200,"Compañia Actualizada Exitosamente",""))
         } catch (error) {
             console.log(error);
             res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
         };
-    },
+    },//ok!!!
     
         // Eliminación de Compañia
         deleteCompany: async (req,res) => {
             try {
-                const {id} = req.body;
+                const id = parseInt(req.params.id);
                 await companiesQueries.deleteCompanyById(id);
                 res.status(200).send(new Response (false,200,"Compañía Eliminada Exitosamente",req.body.id))
             } catch (error) {
                 res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
             }
-        },
+        },//ok!!!
 
 };
 
