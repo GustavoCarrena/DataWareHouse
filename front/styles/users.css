@@ -1,0 +1,20 @@
+body {
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    flex-flow: column nowrap !important;
+    height: auto !important;
+    background-color: #f7f6f6;
+}
+
+* {
+    box-sizing: border-box;
+    
+}
+
+table thead{
+    background-color: #0a4f70;
+    color: white;
+}
