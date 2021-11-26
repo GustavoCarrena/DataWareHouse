@@ -9,4 +9,5 @@ module.exports = function (app) {
     app.use('/regions',regions);
     app.use('/companies', companies);
     app.use('/clients', clients);
+
 };

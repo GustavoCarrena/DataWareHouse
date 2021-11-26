@@ -86,7 +86,7 @@ const employees = {
                 res.status(403).send(new Response(true, 403, "Email o Password incorrectos", ""))
             } else {
                 const token = jwt.sign({email: email, pass: user_pass, role: user.role_id},
-                    JWTKEY, {expiresIn: '1h'}, {algorithm: 'RS256'}); //token del logueo expira en 60 minutos
+                    JWTKEY, {expiresIn: '12h'}, {algorithm: 'RS256'});
                     res.status(200).send(new Response(false, 200, "Usuario logueado exitosamente", {
                     "Usuario": email,
                     "Token": token,
