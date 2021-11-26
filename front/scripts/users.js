@@ -1,17 +1,17 @@
 window.onload = () =>  {
 
-const url = 'http://localhost:3000/employees/getRoleDescription'//ENDPOINT PROVISORIO
+const url = 'http://localhost:3000/employees/employeesData'//ENDPOINT PROVISORIO
 // const container = document.querySelector('tbody');
 // let results = '';
 const modalNewUser = new bootstrap.Modal(document.getElementById('modalNewUser'));
 const formUsers = document.querySelector('form');
-// const id = document.getElementById('Userid');; //VER COMO TRAERLO UNA VEZ QUE SE AUTOGENERE (REGISTRO) + LOS QUE YA ESTAN EN LA DB 
-const name = document.getElementById('name');
-const lastname = document.getElementById('lastname');
-const email = document.getElementById('email');
-const role = document.getElementById('role');
-const password = document.getElementById('password');
-const repeatPassword = document.getElementById('passwordr');
+// const id = document.getElementById('Userid');; 
+let firstname = document.getElementById('firstname');
+let lastname = document.getElementById('lastname');
+let email = document.getElementById('email');
+let role = document.getElementById('role');
+let password = document.getElementById('password');
+let repeatPassword = document.getElementById('passwordr');
 const btnDel = document.getElementById('btnDel'); 
 const id = document.getElementsByClassName('id');
 // const btnEdit = document.getElementById('btnEdit');
@@ -20,21 +20,8 @@ const id = document.getElementsByClassName('id');
 // const box = document.getElementById('check')
 // const rows = document.getElementsByClassName('trTable')
 let option = '';
-
-//Mostrar boton y limpiar campos al cancelar (modal Registro de Usuario)
-btnCreate.addEventListener('click',()=>{
-    name.value = '';
-    lastname.value = '';
-    email.value = '';
-    role.value = '';
-    password.value = '';
-    repeatPassword.value = '';
-    modalNewUser.show();
-    option = 'register';
-});
-
 const checkUser = [];
-
+const editUser = [];
 //Mostrar resultados (body)
 const showData = (users) => { //users porque trae los datos del fetch e ingresa como parametro para aplicarlo a la función
     // console.log(users);
@@ -48,19 +35,27 @@ const showData = (users) => { //users porque trae los datos del fetch e ingresa 
             <td class="tabled">
                 <input type="checkbox" name="checkInput" class="check" id="check${i}">
             </td>
-            <td class="id" style="text-align:center">${i}</td>
-            <td>NombreUser ${i}</td>
-            <td>${'Apellido Usuario'}</td>
-            <td>${'email@email.com'}</td>
-            <td>${users[i].id}</td>
+            <td class="id" style="text-align:center">${users[i].id}</td>
+            <td>${users[i].firstname}</td>
+            <td>${users[i].lastname}</td>
+            <td>${users[i].email}</td>
+            <td>${users[i].role_description}</td>
             <td class="text-center">
             <a id="btnEdit${i}" class="btnEdit btn btn-primary">Editar</a>
             </td>`
         tbody.appendChild(newItem);//Agrega todos los tr = newItem (iterados) al cuerpo de la tabla (tbody)
+        
         checkUser[i] = document.getElementById(`check${i}`);//Identifica en al array vacio (checkUser) los numeros de id de los checkbox
         checkUser[i].addEventListener('change', (e) =>{
-        checkedStyle(e,i);
+            checkedStyle(e,i);
         })//Evento (pintar las filas) al cambiar estado (toggle) de los checkbox
+    
+        editUser[i] = document.getElementById(`btnEdit${i}`);
+        editUser[i].addEventListener('click', (e) => {
+            selectEditData(e,i);
+
+        })
+
     } //FIN DEL "FOR"
 
 
@@ -70,6 +65,54 @@ function checkedStyle(e,i) {
     const idTable = document.getElementById(`trTable${i}`);//Rows (iteradas)
     idTable.classList.toggle('rowchecked');//Alternancia on/off de toogle para pintar, despintar
 }
+
+
+//Actualizacion datos usuario
+function selectEditData(e,i) {
+    const idTable = document.getElementById(`trTable${i}`);
+    const firstnameForm = idTable.children[2].innerHTML;
+    firstname.value = firstnameForm;
+    const lastnameForm = idTable.children[3].innerHTML;
+    lastname.value = lastnameForm;
+    const emailForm = idTable.children[4].innerHTML;
+    email.value = emailForm;
+    const roleForm = idTable.children[5].innerHTML;
+    role.value = roleForm;
+    const passwordForm = users[i].user_pass;
+    password.value = passwordForm;
+    const modalHeader =  document.getElementById('exampleModalLabel');
+    modalHeader.innerHTML = 'Edición de Usuario'
+    modalNewUser.show();
+    option = 'edit';
+}
+
+//Mostrar boton y limpiar campos al cancelar (modal Registro de Usuario)
+btnCreate.addEventListener('click',()=>{
+    firstname.value = '';
+    lastname.value = '';
+    email.value = '';
+    role.value = '';
+    password.value = '';
+    repeatPassword.value = '';
+    const modalHeader =  document.getElementById('exampleModalLabel');
+    modalHeader.innerHTML = 'Registro de Usuario'
+    modalNewUser.show();
+    option = 'register';
+});
+
+formUsers.addEventListener('submit', (e) =>{
+    e.preventDefault()
+    if (option == 'edit') {
+        selectEditData(e,i);
+
+    }
+})
+
+
+
+
+
+
 
 //Comportamiento boton eliminar id seleccionados con los checkbox (VER COMO TRAER LOS ID REALES DE LA DB)
 btnDel.addEventListener('click', () => {
@@ -82,61 +125,21 @@ function () {
         if (checkedRows.checked == true) {
             const userId = parseInt(id[i].innerHTML); //Extrae el numero de id de la columna usuarios de la tabla
             array.push(userId); //Insera en array los Id extraidos
-            
         } 
     };
     //OJO.. SI EL ARRAY ES VACÍO, PONER CONDICIONAL PARA QUE NO VIAJE AL BACK, PARA QUE NO DEVUELVA ERROR
+    if (array.length > 0) {
+        alertify.success('Registro Eliminado')
+    } else{
+        array = '';//aca indicar que no tome el fetch
+        alertify.error('Sin selección de registros Operación Cancelada')
+    }
     console.log('array=>', array) //Aca va el Fetch de eliminación?? (ver cuando traiga fetch)
-    alertify.success('Registro Eliminado')
 },
 function () {
     alertify.error('Eliminación Cancelada')
 });
 });
-
-
-//edicion de registros
-const btnEdit = document.getElementsByClassName('btnEdit')
-
-for (let i = 0; i < btnEdit.length; i++) {
-    btnEdit[i].addEventListener('click', (e) =>{
-        
-        for (let i = 0; i < btnEdit.length; i++) {
-            
-            console.log(e.path[i].id);//id del boton
-        }
-        
-        
-        // selectData(e,i);//invoca funcion de abajo
-    })
-
-    //ver funcionalidad - Actualizacion
-    function selectData(e,i) {
- //elegir segun id tota la info de tbody
- 
-
- 
- const idTable = document.getElementById(`trTable${1}`);
- 
- 
- const name = idTable.children[2].innerHTML
- console.log(name);
- const latsname = idTable.children[3].innerHTML
- console.log(latsname);
- const email = idTable.children[4].innerHTML
- console.log(email);
- const role = idTable.children[5].innerHTML
- console.log(role);
- const password = idTable.children[6].innerHTML//agregar password a la tabla (ver como si es conveniente codificarla del lado del cliente)
- console.log(password);
- const confirmPassword = idTable.children[7].innerHTML//este no agreagarlo, pero hacer funcion para validar que se igual al anterior
- console.log(confirmPassword);
- //una vez terminado a lo de arriba, subirlo al modal para que muestre los datos
-}
-// selectData()
-    
-    
-}
 
 
 
@@ -149,14 +152,7 @@ fetch(url)
     .catch(error => error);
 
 
-
-    
-    // console.log('btnEdit');
-
-    // btnEdit.addEventListener('click', () => {
-    //     console.log('hola');
-    // })
-
+//ordenar tabla
 
 
 

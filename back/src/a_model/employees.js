@@ -19,7 +19,7 @@ const employeesQueries = {
 
     /*=== Consulta de datos de toda la nómina de empleados ===*/
     getEmployeesData: () => {
-        return sequelize.query(`SELECT e.id, e.firstname, e.lastname, e.email, e.role_id ,r.role_description
+        return sequelize.query(`SELECT e.id, e.firstname, e.lastname, e.email, e.role_id ,r.role_description,e.user_pass
         FROM employees e
         INNER JOIN roles r
         ON (e.role_id = r.id)`,{
