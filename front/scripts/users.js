@@ -1,11 +1,19 @@
 window.onload = () =>  {
 
 const url = 'http://localhost:3000/employees/employeesData'//ENDPOINT PROVISORIO
-// const container = document.querySelector('tbody');
-// let results = '';
+
+const usersTable = document.getElementById('usersTable'); //toda la tabla, con encabezados
+const tableData = document.querySelector('tbody');//cuerpo de los datos de la tabla
+const tableRows = document.getElementsByClassName('trTable');
+const tableCells = document.getElementsByTagName('td');
+const btnSortId = document.getElementById('btnSortId');
+const btnSortFirstname= document.getElementById('btnSortFirstname')
+const btnSortLastname= document.getElementById('btnSortLastname')
+const btnSortEmail= document.getElementById('btnSortEmail')
+const btnSortRole= document.getElementById('btnSortRole')
+
 const modalNewUser = new bootstrap.Modal(document.getElementById('modalNewUser'));
 const formUsers = document.querySelector('form');
-// const id = document.getElementById('Userid');; 
 let firstname = document.getElementById('firstname');
 let lastname = document.getElementById('lastname');
 let email = document.getElementById('email');
@@ -14,14 +22,10 @@ let password = document.getElementById('password');
 let repeatPassword = document.getElementById('passwordr');
 const btnDel = document.getElementById('btnDel'); 
 const id = document.getElementsByClassName('id');
-// const btnEdit = document.getElementById('btnEdit');
-
-// const checks = document.querySelectorAll('tr td input.check');
-// const box = document.getElementById('check')
-// const rows = document.getElementsByClassName('trTable')
 let option = '';
 const checkUser = [];
 const editUser = [];
+const orderUser = [];
 //Mostrar resultados (body)
 const showData = (users) => { //users porque trae los datos del fetch e ingresa como parametro para aplicarlo a la función
     // console.log(users);
@@ -53,12 +57,84 @@ const showData = (users) => { //users porque trae los datos del fetch e ingresa 
         editUser[i] = document.getElementById(`btnEdit${i}`);
         editUser[i].addEventListener('click', (e) => {
             selectEditData(e,i);
+        })//Evento datos del usuario al modal 
 
-        })
+
 
     } //FIN DEL "FOR"
 
+//ordenar tabla
+let sortDirection = false;
 
+btnSortId.addEventListener('click', () => {
+    console.log('btnSortId');
+})
+
+btnSortLastname.addEventListener('click', () => {
+    console.log('btnSortId');
+})
+
+btnSortEmail.addEventListener('click', () => {
+    console.log('btnSortEmail');
+})
+btnSortRole.addEventListener('click', () => {
+    console.log('btnSortRole');
+})
+
+let sortDefined;
+
+btnSortFirstname.addEventListener("click", function (e) {
+    order(e)
+});
+
+function order() {
+    let arrayName=[];
+    let arrayLastName=[];
+    let arrayId=[];
+    let arrayEmail=[];
+    let arrayRole=[];
+
+
+    for (let i = 0; i < tableRows.length; i++) {
+        let id = parseInt(tableRows[i].children[1].innerHTML)
+        let name = tableRows[i].children[2].innerHTML.toString()
+        let lastname = tableRows[i].children[3].innerHTML.toString()
+        let email = tableRows[i].children[4].innerHTML.toString()
+        let role = tableRows[i].children[5].innerHTML.toString()
+
+        // arrayCheck.push(check);
+        arrayId.push(id);
+        arrayName.push(name.toLowerCase());
+        arrayLastName.push(lastname.toLowerCase());
+        arrayEmail.push(email.toLowerCase());
+        arrayRole.push(role);
+        arrayOrder(arrayId)
+        arrayOrder(arrayName)
+        arrayOrder(arrayLastName)
+        arrayOrder(arrayEmail)
+        arrayOrder(arrayRole)
+    }
+    
+    function arrayOrder(e) {
+        
+        if (sortDefined == undefined || sortDefined == true) {
+            e.sort((a,b)=>{ if (a > b) {return 1} if (a < b) {return -1} return 0});
+            sortDefined = false;
+        } else {
+            e.sort((a,b)=>{ if (a > b) {return -1} if (a < b) {return 1} return 0});
+            sortDefined = true;
+        }
+        
+    }
+
+
+        console.log('arrayId=>',arrayId);
+        // console.log('arrayName=>',arrayName);
+        // console.log('arrayLastName=>',arrayLastName); 
+        // console.log('arrayEmail=>',arrayEmail);
+        // console.log('arrayLaarrayRolestName=>',arrayRole);
+        
+}
 
 //Resaltar filas
 function checkedStyle(e,i) {
@@ -67,7 +143,7 @@ function checkedStyle(e,i) {
 }
 
 
-//Actualizacion datos usuario
+//Actualizacion datos usuario (modal)
 function selectEditData(e,i) {
     const idTable = document.getElementById(`trTable${i}`);
     const firstnameForm = idTable.children[2].innerHTML;
@@ -86,7 +162,7 @@ function selectEditData(e,i) {
     option = 'edit';
 }
 
-//Mostrar boton y limpiar campos al cancelar (modal Registro de Usuario)
+//Mostrar boton y limpiar campos al cancelar (modal)
 btnCreate.addEventListener('click',()=>{
     firstname.value = '';
     lastname.value = '';
@@ -143,6 +219,11 @@ function () {
 
 
 
+
+
+
+
+
 }//FIN SHOWDATA
 
 //Datos de contenido de tabla (GET-SHOWDATA)
@@ -151,8 +232,6 @@ fetch(url)
     .then(data => showData(data.response))
     .catch(error => error);
 
-
-//ordenar tabla
 
 
 

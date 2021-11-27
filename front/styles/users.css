@@ -40,6 +40,19 @@ table thead{
     background: rgb(248, 252, 5);
 }
 
-.password{
-    -webkit-text-security: disc;
+.trTable:hover {
+    background-color: rgb(195, 204, 240);
+   
+}
+
+.sortImg{
+    width: 10px;
+    height: auto;
+    filter: invert(98%);
+}
+.btnSort{
+    border-style: none;
+    background: transparent;
+    width: inherit;
+    cursor: pointer;
 }

@@ -32,20 +32,21 @@
                 <!-- Datatable (header) -->
                 <thead> 
                     <tr class="text-center">
-                        <th></th>
-                        <th>Id</th>
-                        <th>Nombre</th>
-                        <th>Apellido</th>
-                        <th>Correo Electrónico</th>
-                        <th>Permisos</th>
+                        <th>Check</th>
+                        <th>Id<button type="submit" class="btnSort" id="btnSortId"><img class="sortImg" src="/img/sort-solid.svg" alt="boton-ordenar"></button></th>
+                        <th>Nombre<button type="submit" class="btnSort" id="btnSortFirstname"><img class="sortImg" src="/img/sort-solid.svg" alt="boton-ordenar"></button></th>
+                        <th>Apellido<button type="submit" class="btnSort" id="btnSortLastname"><img class="sortImg" src="/img/sort-solid.svg" alt="boton-ordenar"></button></th>
+                        <th>Correo Electrónico<button type="submit" class="btnSort" id="btnSortEmail"><img class="sortImg" src="/img/sort-solid.svg" alt="boton-ordenar"></button></th>
+                        <th>Permisos<button type="submit" class="btnSort" id="btnSortRole"><img class="sortImg" src="/img/sort-solid.svg" alt="boton-ordenar"></button></th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <!-- Datatable (body) -->
                 <tbody id="tbody"></tbody> 
             </table>
+            
         </div>
-
+        
         <!-- Modal -->
         <div class="modal fade" id="modalNewUser" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
