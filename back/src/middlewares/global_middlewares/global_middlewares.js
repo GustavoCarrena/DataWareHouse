@@ -9,7 +9,7 @@ const JWTKEY = process.env.JWTKEY;
 
 let reqLimit = rateLimit({
     windowMs: 60 * 60 * 1000, // 60 minutos
-    max: 120, // 120 peticiones
+    max: 120000, // 120 peticiones
     message: "Límite máximo de peticiones excedido"
 });
 

@@ -1,0 +1,112 @@
+
+body {
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    flex-flow: column nowrap !important;
+    height: auto !important;
+    
+    
+}
+
+* {
+    box-sizing: border-box;
+    
+}
+
+
+@media (min-width: 1200px){
+
+    .h1{
+        margin: 2rem 3rem !important;
+        font-size: 2.8rem !important;
+        line-height: 1.2;
+        font-weight: bolder !important;
+        color: #0d854d;
+        text-shadow: 1px 1px 0 #bcbcbc, 1px 1px 0 #9c9c9c, 4px 4px 4px rgba(145,206,160,0);
+
+    }
+    .container{
+        margin: 0 !important;
+        width: 50% !important;
+        max-width: 100% !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+    }
+
+    .row {
+        display: flex !important;
+        margin: 1% 0 0.5% 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        flex-flow: column wrap !important;
+        justify-content: center !important;
+        align-items: center !important;
+        margin: 0 !important;
+    }
+
+    .rounded {
+        width: 90%;
+        height: 100%;
+    }
+
+    .shadow-lg, .p-3, .mb-5, .mt-4, .bg-body, .rounded{
+        margin: 0 !important;
+    }
+    
+    .col .mt-4{
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .rounded{
+        width: 100%;
+    }
+
+    .col-md-7 {
+        display: flex !important;
+        flex-flow: row nowrap !important;
+        justify-content: center;
+        align-items: center;
+        width: 80% !important;
+        padding: 0 !important;
+    }
+
+    .col-md-7 .form-label {
+        padding-right: 2% !important;
+        width: 45%;
+        display: inline-flex !important;
+        font-weight: bolder !important;
+        color: rgb(9, 150, 32);
+        justify-content: end;
+        text-shadow: 1px 1px 0 #bcbcbc, 1px 1px 0 #9c9c9c, 4px 4px 4px rgba(145,206,160,0);
+    }
+
+    .form-select{
+        padding: .375rem 1rem .375rem .75rem !important;
+    }
+
+    .btn{
+        width: 30% !important;
+        margin-bottom: 2%;
+    }
+
+    .invalid-tooltip{
+        top:6% !important;
+        left: 100%;
+        width: fit-content;
+    }
+
+
+
+}
+
+
+
+
+
+
