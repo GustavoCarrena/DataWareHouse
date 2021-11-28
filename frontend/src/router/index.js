@@ -7,19 +7,19 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
-    name: 'Login',
-    component: Login
-  },
-  {
     path: '/employee',
-    name: 'Employee',
+    name: 'employee',
     component: Employee
   },
-
+  {
+    path: '/',
+    name: 'login',
+    component: Login
+  }
 ]
 
 const router = new VueRouter({
+  mode: 'history',
   routes
 })
 
