@@ -208,5 +208,13 @@ PRIMARY KEY(id)
 INSERT INTO employees (firstname, lastname, email, role_id, user_pass) VALUES
 ('admi','admi', 'admi@admi.com', 'ADMI', 'admi'),
 ('user','user', 'user@user.com', 'USER', 'user'),
-('usuarioPrueba','usuarioPrueba', 'usuarioPrueba', 'USER', 'usuarioPrueba');
-
+('usuarioPrueba','usuarioPrueba', 'user@user.com', 'USER', 'usuarioPrueba'),
+('usuarioPrueba1','usuarioPrueba1', 'user1@user.com', 'USER', 'usuarioPrueba1'),
+('usuarioPrueba2','usuarioPrueba2', 'user2@user.com', 'USER', 'usuarioPrueba2'),
+('usuarioPrueba3','usuarioPrueba3', 'user3@user.com', 'USER', 'usuarioPrueba3'),
+('usuarioPrueba4','usuarioPrueba4', 'user4@user.com', 'USER', 'usuarioPrueba4'),
+('usuarioPrueba5','usuarioPrueba5', 'user5@user.com', 'USER', 'usuarioPrueba5'),
+('usuarioPrueba6','usuarioPrueba6', 'user6@user.com', 'USER', 'usuarioPrueba6'),
+('usuarioPrueba7','usuarioPrueba7', 'user7@user.com', 'USER', 'usuarioPrueba7'),
+('usuarioPrueba8','usuarioPrueba8', 'user8@user.com', 'USER', 'usuarioPrueba8'),
+('usuarioPrueba9','usuarioPrueba9', 'user9@user.com', 'USER', 'usuarioPrueba9');

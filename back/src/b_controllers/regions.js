@@ -6,10 +6,35 @@ const regions = {
     // Toda la información de Regiones, Paises y Ciudades
     getAllData: async (req, res) => {
         try {
-            const getData = await regionsQueries.getAllDataRegions();
-            res.status(200).send(new Response(false, 200, "Consulta exitosa", getData));
+            const regionsAndAnotherThings = await regionsQueries.getAllDataRegions();
+
+            const response = regionsAndAnotherThings.reduce((regions, region) => {
+                if(!regions.some(r => r.region_id === region.region_id)) {
+                    const reCountries = regionsAndAnotherThings.reduce((countries, country) => {
+                        if(!countries[country.country_id]){
+                            countries[country.country_id] = {
+                                country_id: country.country_id,
+                                country_name: country.country_name,
+                                region_id: country.region_id,
+                                cities: regionsAndAnotherThings.filter(city => city.country_id === country.country_id).map(city => ({city_id: city.city_id, city_name: city.city_name}))
+                            }
+                        }
+                        return countries;
+                    },{})
+                    
+                    // console.log(Object.values(reCountries));
+                    regions.push({
+                        region_id: region.region_id,
+                        region_name: region.region_name,
+                        countries: Object.values(reCountries).filter(c => c.region_id === region.region_id)
+                    });
+                }
+                return regions;
+            },[])
+            
+            res.status(200).send(new Response(false, 200, "Consulta exitosa", response));
         } catch (error) {
-            res.status(400).send(new Response(true, 400, "No se puede obtener la consulta", ""));
+            res.status(400).send(new Response(true, 400, "No se puede obtener la consulta", error.message ));
         }
     },//ok!!!
 
@@ -19,6 +44,7 @@ const regions = {
     getRegionsData: async (req, res) => {
         try {
             const getData = await regionsQueries.getRegions();
+            console.log('getData==>', getData);
             res.status(200).send(new Response(false, 200, "Consulta exitosa", getData));
         } catch (error) {
             res.status(400).send(new Response(true, 400, "No se puede obtener la consulta", ""));
@@ -31,7 +57,7 @@ const regions = {
             const {region_name} = req.body;
             const createRegion = await regionsQueries.createRegion(region_name);
             const regionId =  createRegion[0]
-            res.status(200).send(new Response (false,200,"Región Creada Exitosamente",{id:regionId, region_name:region_name}))
+            res.status(200).send(new Response (false,200,"Región Creada Exitosamente",""))
         } catch (error) {
             res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
         }

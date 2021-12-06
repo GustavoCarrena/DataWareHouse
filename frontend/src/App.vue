@@ -5,15 +5,12 @@
 </template>
 <style>
 
+
 body {
-    margin: 0 ;
-    padding: 0 ;
-    display: flex ;
-    justify-content: center;
-    align-items: center ;
-    flex-flow: column nowrap;
-    height: auto ;
-    background-color: #f7f6f6;
+  height: 96vh !important;
+  background-color: #f7f6f6;
+  width: 95vw !important;
+  margin-left: 25px;
 }
 
 * {
@@ -21,35 +18,44 @@ body {
     
 }
 
-#app{
-    width: 100%;
-    display: flex;
-    justify-content: center;
+tbody, td, tfoot, th, thead, tr {
+    border-color: inherit;
+    border-style: solid;
+    border-width: 0;
+    text-align: center !important;
 }
 
-.container{
-  width: 100%;
+thead tr{
+  background-color: aqua !important;
 }
 
-thead{
-  text-align: center;
-}
-
-td{
-  text-align: center;
-}
-
-.mod{
-  margin: 10px 5px 0 0 !important;
+.btn-warning{
+    width: 80px !important;
+    padding: 0 !important;
+    font-weight: bold !important;
+    color: darkgreen;
+    height: 30px !important;
 
 }
-.lab{
-  margin: 2px 2px 0 0;
-  color: rgb(6, 6, 153);
+
+.ppal-btns{
+  display: flex;
+  flex-flow: row nowrap;
+  width: auto;
+  justify-content: space-between;
+  }
+
+.ppal-btns .btnppal{
+  
+  padding: 0 !important;
+  font-weight: bold !important;
+  height: 50px !important;
+  
+  
 }
 
-.input{
-  margin-top: 3px !important;
+.modal-open{
+  padding-right: 0 !important;
 }
 
 </style>

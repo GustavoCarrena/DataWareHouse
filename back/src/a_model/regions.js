@@ -14,10 +14,11 @@ const regionsQueries = {
             ON (r.id = co.region_id)
             LEFT JOIN cities ci
             ON (ci.country_id = co.id)
-            GROUP BY ci.id
-            ORDER BY r.id
+            ORDER BY r.region_name
             `, 
             {type: sequelize.QueryTypes.SELECT});
+            
+            
     },//ok!!!
 
     //Alta de Región
@@ -62,8 +63,8 @@ const regionsQueries = {
 
     /*=== Consulta de paises por region ===*/
     getCountriesByRegion: (regionid) => {
-        return sequelize.query(
-            `SELECT  co.id AS country_id, co.country_name AS country_name,r.id AS region_id, r.region_name AS region_name
+        resp = sequelize.query(
+            `SELECT  co.id AS country_id, co.country_name AS country_name
             FROM regions r
             INNER JOIN countries co
             ON (r.id = co.region_id)
