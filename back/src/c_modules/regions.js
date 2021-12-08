@@ -8,7 +8,7 @@ router.get('/getAllRegionsData', /*employeesMiddlewares.authenticateJWT,*/region
 router.get('/getCountriesData/:region_id', employeesMiddlewares.authenticateJWT,regionsMiddlewares.dataFillCountryValidate, regions.getCountriesData);//ok!!!
 
 router.post('/createRegion', /*employeesMiddlewares.authenticateJWT, regionsMiddlewares.dataValidateInsertRegion,*/ regions.addRegion);//ok
-router.post('/addCountry/:region_id', employeesMiddlewares.authenticateJWT, regionsMiddlewares.dataValidateInsertCountry,regions.addCountry);
+router.post('/addCountry/:region_id', /*employeesMiddlewares.authenticateJWT, regionsMiddlewares.dataValidateInsertCountry,*/regions.addCountry);
 router.post('/addCity/:id', /*employeesMiddlewares.authenticateJWT, regionsMiddlewares.dataValidateInsertCity,*/ regions.addCity);//ok
 
 router.put('/updateRegion/:id', employeesMiddlewares.authenticateJWT, regionsMiddlewares.dataValidateUpdateRegion, regions.updateRegion);//ok
