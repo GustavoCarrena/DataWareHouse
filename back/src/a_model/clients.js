@@ -2,11 +2,12 @@ const sequelize = require('../../database/db_conection');
 
 const clientsQueries = {
 
-    //Consulta de vista de contactos
+    // Consulta de vista de contactos
     getClientsView: () => {
         return sequelize.query(
-            `SELECT  cl.id AS client_id, concat(cl.firstname,' ' ,cl.lastname) AS fullname,cl.email,co.country_name,re.region_name,
-            com.company_name, cl.position, por.porposal_description
+            `SELECT  cl.id AS client_id,cl.firstname, cl.lastname,concat(cl.firstname,' ' ,cl.lastname) AS fullname,cl.email,co.country_name,re.region_name,
+            com.id AS company_id,com.company_name,ci.id AS city_id ,cl.position, por.id AS porposal_id ,por.porposal_description,cl.clientAddress
+            ,clcon.whatsapp_account,clcon.whatsapp_preference,clcon.instagram_account, clcon.instagram_preference
             FROM clients cl
             LEFT JOIN cities ci
             ON (ci.id = cl.city_id)
@@ -18,9 +19,11 @@ const clientsQueries = {
             ON(com.id = cl.company_id)
             LEFT JOIN porposal_interest por
             ON (por.id = cl.porposal_id)
-   			GROUP BY cl.id`,
+            LEFT JOIN client_contact clcon
+            ON (cl.id = clcon.client_id)`,
             {type: sequelize.QueryTypes.SELECT});
     },//ok!!!
+
 
     //Alta de cliente - tabla clients
     createClient: (firstname, lastname, position, email, company_id, city_id, clientAddress, porposal_id) => {

@@ -8,17 +8,17 @@ const clients = {
     // Alta de cliente
     addClient: async (req,res) => {
         try {
-            const {firstname, lastname, position, email, clientAddress,whatsapp_account, whatsapp_preference,instagram_account,instagram_preference} = req.body;
-            const company_id= parseInt (req.params.company_id);
-            const city_id = parseInt (req.params.city_id);
-            const porposal_id = parseInt (req.params.porposal_id);
+            const {firstname, lastname, position, email,company_id, city_id, clientAddress, porposal_id,whatsapp_account, whatsapp_preference,instagram_account,instagram_preference} = req.body;
+            // const company_id= parseInt (req.params.company_id);
+            // const city_id = parseInt (req.params.city_id);
+            // const porposal_id = parseInt (req.params.porposal_id);
             await clientsQueries.createClient(firstname, lastname, position, email, company_id, city_id, clientAddress, porposal_id);
             const lastInsertId = await clientsQueries.lastInsertId()
             client_id = lastInsertId[0]['last_insert_id()'];
             await clientsQueries.createContact(client_id,whatsapp_account, whatsapp_preference,instagram_account,instagram_preference)             
             res.status(200).send(new Response (false,200,"Cliente Creado Exitosamente",""));
         } catch (error) {
-            res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
+            res.status(500).send(new Response(true, 400, "No se pudo realizar la operación", error));
         }
     },//ok!!!!
 

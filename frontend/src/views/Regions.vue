@@ -1,33 +1,39 @@
 <template>
 <div>
-    
-        <header>  
-      
-      <div class="first-header">
-        <h1 class="row col-5">Gestion de Regiones, Países y Ciudades</h1>
-        <b-nav class="navbar">
-          <b-nav-item href="#">Contactos</b-nav-item>
-          <b-nav-item href="http://localhost:8080/employee">Usuarios</b-nav-item>
-          <b-nav-item href="#">Compañias</b-nav-item>
-          <b-nav-item href="http://localhost:8080">Salir</b-nav-item>
-        </b-nav>
-      </div>
+
+    <header>
+
+        <div class="first-header">
+            <h1 class="row col-5">Gestion de Regiones, Países y Ciudades</h1>
+            <b-nav class="navbar">
+                <b-nav-item href="http://localhost:8080/contacts">Contactos</b-nav-item>
+                <b-nav-item href="http://localhost:8080/employee">Usuarios</b-nav-item>
+                <b-nav-item href="#">Compañias</b-nav-item>
+                <b-nav-item href="http://localhost:8080">Salir</b-nav-item>
+            </b-nav>
+        </div>
 
     </header>
 
-    
-    
     <div class="region-crud">
         <b-button size="sm" class="col-2 mr-2 addRegion-btn" variant="success" @click="showAddRegionModal({})">Nueva Región</b-button>
     </div>
-    <div v-for="region in regions" :key="region.region_id" class="region-container">
+    <div v-for="region in regions" :key="`region-${region.region_id}`" class="region-container">
 
         <div class="inline-region-container">
             <strong class="region-text">{{region.region_name}}</strong>
             <b-button size="sm" class="col-2 mr-2 deleteRegion-btn" variant="danger" @click="removeRegion(region.region_id)">Eliminar Región</b-button>
+
+            <b-dropdown variant="warning" id="dropdown-form" text="Editar Región" ref="dropdown" class="m-2 add-b-form-group edit-region-bt">
+                <b-dropdown-form>
+                    <b-form-input v-model="region.region_name" type="text" size="sm" placeholder="Nuevo Nombre de Región"></b-form-input>
+                    <b-button variant="success" size="sm" @click="editRegion(region)">Editar</b-button> <br>
+                </b-dropdown-form>
+            </b-dropdown>
+
             <b-dropdown variant="success" id="dropdown-form" text="Nuevo País" ref="dropdown" class="m-2 add-b-form-group add-country-bt">
                 <b-dropdown-form>
-                    <b-form-input name="countryId" v-model="newCountryId" type="text" size="sm" placeholder="Nuevo Id País (*)" class="dropdown-form"></b-form-input>
+                    <b-form-input name="countryId" v-model="newCountryId" type="text" size="sm" placeholder="Nuevo Id País (*)" class="dropdown-form id-country-input"></b-form-input>
                     <b-form-input v-model="newCountryNAme" type="text" size="sm" placeholder="Nuevo Nombre de País"></b-form-input>
                     <b-button variant="success" size="sm" @click="addContry(region.region_id)">Crear</b-button> <br>
                     <small>(*) Obligatorio: Tres letras mayúsculas</small>
@@ -35,7 +41,7 @@
             </b-dropdown>
         </div>
 
-        <div v-for="country in region.countries" :key="country.country_id" class="country">
+        <div v-for="country in region.countries" :key="`country-${country.country_id}`" class="country">
             <div class="main-countries-btn">
                 <div class="delete-country-btn">
                     País:<strong class="country-text">{{country.country_name}}</strong>
@@ -44,8 +50,8 @@
                 <div class="edit-country-containter">
 
                     <b-dropdown variant="warning" class="mx-1 edit-country-btn" text="Editar País">
-                        <b-form-input class="edit-country-input" v-model="editCountryName" placeholder="Nuevo Nombre Pais"></b-form-input>
-                        <b-button class="edit-country-sbtn" variant="success" @click="editCountry(country.country_id)">Editar</b-button>
+                        <b-form-input class="edit-country-input" v-model="country.country_name" placeholder="Nuevo Nombre Pais"></b-form-input>
+                        <b-button class="edit-country-sbtn" variant="success" @click="editCountry(country)">Editar</b-button>
                     </b-dropdown>
                 </div>
             </div>
@@ -57,15 +63,15 @@
                 </b-dropdown>
             </div>
 
-            <div v-for="city in country.cities" :key="city.city_id" class="city">
+            <div v-for="(city,cityIndex) in country.cities" :key="`city-${city.city_id}-${cityIndex}`" class="city">
 
                 <div class="city-container">
                     Ciudad: <strong class="city-text">{{city.city_name}}</strong>
                     <b-button class="remove-city-btn" variant="danger" @click="removeCity(city.city_id)">Eliminar Ciudad</b-button>
                     <div class="edit-city-containter">
                         <b-dropdown variant="warning" class="mx-1 add-city-btn" text="Editar Ciudad">
-                        <b-form-input class="edit-city-input" v-model="editCityName" placeholder="Nuevo Nombre Ciudad"></b-form-input>
-                        <b-button class="edit-city-btn" variant="success" @click="editCity(city.city_id)">Editar</b-button>
+                            <b-form-input class="edit-city-input" v-model="city.city_name" placeholder="Nuevo Nombre Ciudad"></b-form-input>
+                            <b-button class="edit-city-btn" variant="success" @click="editCity(city)">Editar</b-button>
                         </b-dropdown>
                     </div>
                 </div>
@@ -98,7 +104,7 @@ export default {
             regionId: '',
             newCountryId: '',
             newCountryNAme: '',
-            editCountryName: '',
+            NameeditCountry: '',
             newCityName: '',
             editCityName: '',
             regions: [{
@@ -167,8 +173,43 @@ export default {
             }
         },
 
+        async editRegion(region) {
+            try {
+                const url = `http://localhost:3000/regions/updateRegion/${region.region_id}`;
+                const payload = {
+                    region_name: region.region_name
+                }
+                const response = await fetch(url, {
+                    method: "PUT",
+                    body: JSON.stringify(payload),
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                });
+                const data = await response.json();
+
+                if (data.status == 400) {
+                    this.$bvModal.msgBoxOk(data.response);
+                    region.region_name = '';
+                    this.$alertify.error('OPERACIÓN CANCELADA')
+                    await this.getRegionsData()
+                } else {
+                    await this.getRegionsData()
+                    this.$bvModal.msgBoxOk('Pais editado exitosamente');
+                    region.region_name = '';
+                    this.$alertify.success('OPERACIÓN EXITOSA');
+
+                }
+
+            } catch (error) {
+                error
+            }
+
+        },
+
+
         async removeRegion(region_id) {
-            
+
             try {
                 const url = `http://localhost:3000/regions/deleteRegion/${region_id}`;
                 const response = await fetch(url, {
@@ -189,7 +230,7 @@ export default {
             try {
                 const url = `http://localhost:3000/regions/addCountry/${region_id}`;
                 const payload = {
-                    id: this.newCountryId,
+                    id: this.newCountryId.toUpperCase(),
                     country_name: this.newCountryNAme
                 };
                 const response = await fetch(url, {
@@ -203,6 +244,7 @@ export default {
                 if (data.status == 400) {
                     this.$bvModal.msgBoxOk(data.response);
                     this.$alertify.error('OPERACIÓN CANCELADA')
+                    await this.getRegionsData();
                 } else {
                     this.regions = data.response;
                     await this.getRegionsData();
@@ -227,18 +269,26 @@ export default {
                 });
                 await response.json();
                 await this.getRegionsData();
-                this.$alertify.success(`País '${country_id}' eliminado Exitosmente`);
+                if (country_id === null) {
+                    this.$bvModal.msgBoxOk('No existe País para eliminar');
+                    this.$alertify.error(`OPERACION CANCELADA`);
+                    await this.getRegionsData();
+                } else {
+                    await this.getRegionsData();
+                    this.$alertify.success(`País '${country_id}' eliminado Exitosmente`);
+                }
+
             } catch (err) {
                 err
             }
         },
 
-        async editCountry(country_id) {
+        async editCountry(country) {
             try {
-                const url = `http://localhost:3000/regions/updateCountry/${country_id.toUpperCase()}`;
+                const url = `http://localhost:3000/regions/updateCountry/${country.country_id}`;
                 const payload = {
-                    country_name: this.editCountryName
-                };
+                    country_name: country.country_name
+                }
                 const response = await fetch(url, {
                     method: "PUT",
                     body: JSON.stringify(payload),
@@ -247,13 +297,19 @@ export default {
                     },
                 });
                 const data = await response.json();
-                if (data.status == 400) {
+
+                if (country.country_id === null) {
+                    this.$bvModal.msgBoxOk('No existe País para editar');
+                    country.country_name = '';
+                    this.$alertify.error(`OPERACION CANCELADA`);
+                } else if (data.status == 400) {
                     this.$bvModal.msgBoxOk(data.response);
                     this.$alertify.error('OPERACIÓN CANCELADA')
+                    await this.getRegionsData()
                 } else {
                     await this.getRegionsData()
                     this.$bvModal.msgBoxOk('Pais editado exitosamente');
-                    this.editCountryName = '';
+                    country.country_name = '';
                     this.$alertify.success('OPERACIÓN EXITOSA');
 
                 }
@@ -265,8 +321,9 @@ export default {
         },
 
         async addCity(country_id) {
+
             try {
-                const url = `http://localhost:3000/regions/addCity/${country_id.toUpperCase()}`;
+                const url = `http://localhost:3000/regions/addCity/${country_id}`;
                 const payload = {
                     city_name: this.newCityName
                 };
@@ -278,10 +335,17 @@ export default {
                     }
                 });
                 const data = await response.json();
-                if (data.status == 400) {
+
+                if (country_id === null) {
+                    this.$bvModal.msgBoxOk('No existe País para alta de Ciudad');
+                    this.newCityName = '';
+                    this.$alertify.error(`OPERACION CANCELADA`);
+                    await this.getRegionsData()
+                } else if (data.status == 400) {
                     this.newCityName = '';
                     this.$bvModal.msgBoxOk(data.response);
                     this.$alertify.error('OPERACIÓN CANCELADA')
+                    await this.getRegionsData()
                 } else {
                     await this.getRegionsData();
                     this.newCityName = '';
@@ -302,21 +366,27 @@ export default {
                         "Content-Type": "application/json",
                     }
                 });
-                await response.json();
-                await this.getRegionsData();
-                this.$alertify.success(`Ciudad '${city_id}' eliminada exitosmente`);
+                if (city_id === null) {
+                    this.$bvModal.msgBoxOk('No existe Ciudad para Eliminar');
+                    this.$alertify.error(`OPERACION CANCELADA`);
+                    await this.getRegionsData()
+                } else {
+                    await response.json();
+                    await this.getRegionsData();
+                    this.$alertify.success(`Ciudad '${city_id}' eliminada exitosmente`);
+                }
+
             } catch (err) {
                 err
             }
         },
 
+        async editCity(city) {
 
-        async editCity(city_id) {
-            
             try {
-                const url = `http://localhost:3000/regions/updateCity/${city_id}`;
+                const url = `http://localhost:3000/regions/updateCity/${city.city_id}`;
                 const payload = {
-                    city_name: this.editCityName
+                    city_name: city.city_name
                 };
                 const response = await fetch(url, {
                     method: "PUT",
@@ -326,13 +396,19 @@ export default {
                     },
                 });
                 const data = await response.json();
-                if (data.status == 400) {
+                if (city.city_id === null) {
+                    this.$bvModal.msgBoxOk('No existe Ciudad para Editar');
+                    city.city_name = '';
+                    this.$alertify.error(`OPERACION CANCELADA`);
+                    await this.getRegionsData()
+                } else if (data.status == 400) {
                     this.$bvModal.msgBoxOk(data.response);
                     this.$alertify.error('OPERACIÓN CANCELADA')
+                    await this.getRegionsData()
                 } else {
                     await this.getRegionsData()
                     this.$bvModal.msgBoxOk('Pais editado exitosamente');
-                    this.editCityName = '';
+                    city.city_name = '';
                     this.$alertify.success('OPERACIÓN EXITOSA');
                 }
             } catch (error) {
@@ -347,30 +423,31 @@ export default {
 </script>
 
 <style>
-
-  header{
+header {
     width: 95vw;
     padding: 11px;
-  }
+}
 
-  .first-header{
+.first-header {
     display: flex;
     flex-flow: row nowrap;
     width: 100%;
     align-items: center;
     margin-bottom: 16px;
     justify-content: space-between;
-  }
+}
 
-  h1 {
+h1 {
     color: #0650c0;
     border-color: black;
     font-family: system-ui;
     text-shadow: 7px 7px #dbecf1;
     padding: 0;
-  };
+}
 
- .nav-link {
+;
+
+.nav-link {
     display: block !important;
     padding: 0.5rem 1rem !important;
     color: #0d6efd !important;
@@ -378,26 +455,25 @@ export default {
     transition: color .15s ease-in-out;
     background-color: .15s ease-in-out;
     border-color: .15s ease-in-out;
-   
+
 }
 
-  .navbar a{
+.navbar a {
     color: #516d9b !important;
     border-color: rgb(37, 54, 136) !important;
     font-family: system-ui !important;
     text-shadow: 1px 1px #dbecf1 !important;
     font-size: 1.70rem !important;
     margin: 0 !important;
-  }
+}
 
-
-  .first-header ul li a:hover {
+.first-header ul li a:hover {
     color: #0650c0 !important;
     border-color: black !important;
     font-family: system-ui !important;
     text-shadow: 7px 7px #dbecf1 !important;
-    transform:scale(1.2);
-  }
+    transform: scale(1.2);
+}
 
 .region-crud {
     margin-top: 10px;
@@ -418,7 +494,7 @@ export default {
     margin: 0 5px;
 }
 
-.deleteRegion-btn{
+.deleteRegion-btn {
     margin-left: 10px;
     height: 40px;
 }
@@ -529,7 +605,7 @@ p {
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
-    justify-content: start;
+    justify-content: flex-start;
     margin-bottom: 10px;
     width: 270px;
 }

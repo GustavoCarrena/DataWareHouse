@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Login from '../views/Login.vue'
 import Employee from '../views/Employee.vue'
 import Regions from '../views/Regions.vue'
+import Contacts from '../views/Contacts.vue'
 
 Vue.use(VueRouter)
 
@@ -16,6 +17,11 @@ const routes = [
     path: '/regions',
     name: 'regions',
     component: Regions
+  },
+  {
+    path: '/contacts',
+    name: 'contact',
+    component: Contacts
   },
   {
     path: '/',

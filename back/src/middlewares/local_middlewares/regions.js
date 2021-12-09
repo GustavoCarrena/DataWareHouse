@@ -80,7 +80,7 @@ const regionsMiddlewares = {
         const findName = getCityAllData.find(name => name.city_name == city_name);
         const findCountry = countryId.find(r => r.id == id);
 
-        id.length !== 3 ? res.status(400).send(new Response(true, 400, "No se pudo realizar la operación","Los Id de los paises deben ser de 3 caracteres")):
+        id.length !== 3 ? res.status(400).send(new Response(true, 400, "No se pudo realizar la operación","No existe el Pais asociado a la Región")):
 
         !findCountry ? 
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación","El Pais no existe")):
@@ -106,16 +106,16 @@ const regionsMiddlewares = {
         const findId = regionData.map(r => r.id).find(id => id == req.params['id']);
 
         (id === null|| region_name.length === 0) ? 
-        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación.Debe ingresar todos los datos", "")):
+        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación.", "Debe ingresar todos los datos")):
         
         (id === " "||  region_name === " ") ? 
-        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. No puede insertar un caracter vacío", "")):       
+        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación.", " No puede insertar un caracter vacío")):       
         
         (typeof id  !== "number" || typeof region_name  !== "string") ? 
-        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. Alguno de los formatos requeridos para los datos ingresados no es válido", "")):
+        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. ", "Alguno de los formatos requeridos para los datos ingresados no es válido")):
 
         findId === undefined ? 
-        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. El Id de la Region no existe","")):
+        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. ","El Id de la Region no existe")):
         
         next();
     },//ok!!!!
@@ -131,7 +131,7 @@ const regionsMiddlewares = {
         // const regionData = await regionsQueries.getRegions()
         // const findRegionId = regionData.map(r => r.id).find(r => r == region_id);
         
-        (typeof id !== "string" || id !== id.toUpperCase() || typeof(req.body['country_name']) !== "string") ? 
+        (typeof id !== "string" || typeof(req.body['country_name']) !== "string") ? 
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación", `Alguno de los formatos requeridos para los datos ingresados no es válido`)):
 
         (id === " "||  req.body['country_name'] === " ") ? 

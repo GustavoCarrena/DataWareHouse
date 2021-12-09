@@ -11,7 +11,7 @@ router.post('/createRegion', /*employeesMiddlewares.authenticateJWT, regionsMidd
 router.post('/addCountry/:region_id', /*employeesMiddlewares.authenticateJWT,*/ regionsMiddlewares.dataValidateInsertCountry,regions.addCountry);
 router.post('/addCity/:id', /*employeesMiddlewares.authenticateJWT,*/ regionsMiddlewares.dataValidateInsertCity, regions.addCity);//ok
 
-router.put('/updateRegion/:id', employeesMiddlewares.authenticateJWT, regionsMiddlewares.dataValidateUpdateRegion, regions.updateRegion);//ok
+router.put('/updateRegion/:id', /*employeesMiddlewares.authenticateJWT,*/ regionsMiddlewares.dataValidateUpdateRegion, regions.updateRegion);//ok
 router.put('/updateCountry/:id', /*employeesMiddlewares.authenticateJWT,*/ regionsMiddlewares.dataValidateUpdateCountry,regions.updateCountry);//ok
 router.put('/updateCity/:id', /*employeesMiddlewares.authenticateJWT, */regionsMiddlewares.dataValidateUpdateCity,regions.updateCity);//ok
 

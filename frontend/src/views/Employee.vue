@@ -6,7 +6,7 @@
       <div class="first-header">
         <h1 class="row col-5">Gestion de Usuarios</h1>
         <b-nav class="navbar">
-          <b-nav-item href="#">Contactos</b-nav-item>
+          <b-nav-item href="http://localhost:8080/contacts">Contactos</b-nav-item>
           <b-nav-item href="http://localhost:8080/regions">Regiones</b-nav-item>
           <b-nav-item href="#">Compañias</b-nav-item>
           <b-nav-item href="http://localhost:8080">Salir</b-nav-item>
