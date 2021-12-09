@@ -367,7 +367,6 @@
           },
         });
         await this.getEmployees();
-        console.log();
       } catch (error) {
         error
       }
@@ -383,20 +382,17 @@
 <style scoped>
 
   header{
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: center;
-    height: fit-content;
-    width: 100vw;
+    width: 95vw;
     padding: 11px;
   }
 
   .first-header{
     display: flex;
     flex-flow: row nowrap;
-    width: 100%;
+    width: 95%;
     align-items: center;
     margin-bottom: 16px;
+    justify-content: space-between;
   }
 
   h1 {
@@ -405,10 +401,8 @@
     font-family: system-ui;
     text-shadow: 7px 7px #dbecf1;
     padding: 0;
-    width: fit-content;
+    width: 50% !important;
     position: relative;
-    left: 29.1%;
-    bottom: -32px;
   };
 
 
@@ -472,13 +466,13 @@
 
   .navbar{
     position: relative;
-    left: 38.1%;
+    left: 4.8%;
     padding: 0;
     top: -12px;
-    width: 35%;
+    width: 45%;
   }
 
-  .navbar[data-v-66231c30] a[data-v-66231c30]{
+  .navbar a{
     color: #516d9b !important;
     border-color: rgb(37, 54, 136) !important;
     font-family: system-ui !important;
@@ -488,7 +482,7 @@
 
   }
 
-  .navbar[data-v-66231c30] a[data-v-66231c30]:hover {
+  .navbar a:hover {
     color: #0650c0 !important;
     border-color: black !important;
     font-family: system-ui !important;
@@ -606,8 +600,5 @@
   max-height: 7%;
   }
 
- 
-
-  
 
 </style>

@@ -80,19 +80,19 @@ const regionsMiddlewares = {
         const findName = getCityAllData.find(name => name.city_name == city_name);
         const findCountry = countryId.find(r => r.id == id);
 
-        id.length !== 3 ? res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. Los Id de los paises deben ser de 3 caracteres","")):
+        id.length !== 3 ? res.status(400).send(new Response(true, 400, "No se pudo realizar la operación","Los Id de los paises deben ser de 3 caracteres")):
 
         !findCountry ? 
-        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación El Pais no existe","")):
+        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación","El Pais no existe")):
         
         findName !== undefined ? 
-        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación El Nombre de la Ciudad ya se encuentra registrado","")):
+        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación","El Nombre de la Ciudad ya se encuentra registrado")):
         
         (req.body['city_name'].length === 0||req.params['id'].length === 0) ? 
-        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. Debe ingresar todos los datos", "")):
+        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación.", "Debe ingresar todos los datos")):
         
         (req.body['city_name'] === " "||req.params['id'] === " ") ? 
-        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. No puede insertar un caracter vacío", "")):       
+        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación", "No puede insertar un caracter vacío")):       
         
         next();
     },//ok!!!
@@ -128,61 +128,42 @@ const regionsMiddlewares = {
         const id = req.params.id;
         const countryData = await regionsQueries.getAllCountries(); 
         const findId = countryData.map(co => co.id).find(coid => coid == id);
-        const regionData = await regionsQueries.getRegions()
-        const findRegionId = regionData.map(r => r.id).find(r => r == region_id);
+        // const regionData = await regionsQueries.getRegions()
+        // const findRegionId = regionData.map(r => r.id).find(r => r == region_id);
         
-        (typeof id !== "string" || id !== id.toUpperCase() || typeof(req.body['country_name']) !== "string" || typeof(req.body['region_id']) !== "number") ? 
+        (typeof id !== "string" || id !== id.toUpperCase() || typeof(req.body['country_name']) !== "string") ? 
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación", `Alguno de los formatos requeridos para los datos ingresados no es válido`)):
 
-        (id === " "||  req.body['country_name'] === " " ||req.body['region_id'] === " ") ? 
+        (id === " "||  req.body['country_name'] === " ") ? 
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación", `No puede insertar caracter vacio`)):       
 
-        (id.length === 0|| req.body['country_name'].length === 0 || req.body.region_id.length === 0) ? 
+        (id.length === 0|| req.body['country_name'].length === 0) ? 
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación", `Debe ingresar todos los datos`)):
 
         id.length !== 3 ? res.status(400).send(new Response(true, 400, "No se pudo realizar la operación", `Los Id de los paises deben ser de 3 caracteres`)):
 
         findId === undefined ? 
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación", `El Id del Pais ${id} no existe`)):
-        findRegionId === undefined ? 
-        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación", `El Id de la region ${req.body.region_id} no existe`)):
+        // findRegionId === undefined ? 
+        // res.status(400).send(new Response(true, 400, "No se pudo realizar la operación", `El Id de la region ${req.body.region_id} no existe`)):
 
         next();
     },//ok!!!
 
 
-
-
-
     /*== Condiciones de ingreso de datos para actualización de Ciudades ===*/
     dataValidateUpdateCity: async (req, res, next) => {
-    
-        const {city_name,country_id} = req.body;
+        const {city_name} = req.body;
         const id = parseInt(req.params.id);
 
-        const cityData = await regionsQueries.getAllCities(); 
-        const findCityId = cityData.map(ci => ci.id).find(cid => cid == id);
-
-        const countryData = await regionsQueries.getAllCountries()
-        const findCountryId = countryData.map(co => co.id).find(co => co == country_id);
-
-        (id === " "||  req.body['city_name'] === " " || country_id === " " ) ? 
+        (id === " "||  req.body['city_name'] === " ") ? 
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación,No puede insertar un caracter vacío", "")):       
 
-        (id.toString().length === 0|| req.body['city_name'].length === 0 || country_id.length === 0) ? 
+        (req.body['city_name'].length === 0 ) ? 
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. Debe ingresar todos los datos", "")):
 
-        country_id.length !== 3 ? res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. Los Id de los paises deben ser de 3 caracteres", "")):
-
-        findCityId === undefined ? 
-        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. El Id de la Ciudad no existe", "")):
-        
-        (typeof(id) !== "number" || typeof(req.body['city_name']) !== "string" || typeof(req.body['country_id']) !== "string") || req.body.country_id !== req.body.country_id.toUpperCase() ? 
+        (typeof(id) !== "number" || typeof(req.body['city_name']) !== "string") ? 
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. Alguno de los formatos requeridos para los datos ingresados no es válido", "")):
-        
-        findCountryId === undefined ? 
-        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación.El Id del Pais no existe", "")):
-        
         next();
     },//Ok!!!
     
@@ -190,25 +171,15 @@ const regionsMiddlewares = {
     
         const id = parseInt(req.params.id);
         
-        const getAllDataRegions = await regionsQueries.getAllDataRegions();
-        const getCountryByRegion = await regionsQueries.getCountriesByRegion(id);
-        const findCountryId = getAllDataRegions.map(co => co.country_id) 
-        const onlyCountries = getCountryByRegion.map(co => co.country_id).find(co => co);
-        const countryAndCities = findCountryId.find(co=>co === onlyCountries) 
         const getRegions = await regionsQueries.getRegions()
         const regionExist = getRegions.map(r => r.id).find(r=>r === id) //que exista el codigo de region ingresado
         
-        id.toString().length === 0 || id === " " ?
-        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. Debe ingresar todos los datos", "")):
-
         typeof id !== "number"  ? 
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. El campo debe ser numérico", "")):
 
-        (countryAndCities === undefined && onlyCountries === undefined && regionExist === undefined) ? // Si tiene esta combinación, no existe la region
+        (regionExist === undefined) ?
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. La región que desea eliminar no existe","")):
-        
         next()
-
     },//ok!!!!
 
     dataValidateDeleteCountry: async (req, res, next) => {

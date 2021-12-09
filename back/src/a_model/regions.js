@@ -90,10 +90,10 @@ const regionsQueries = {
     },//ok!!!!
 
     // //Editar País
-    updateCountryById : ( id,region_id,country_name) => {
-        return sequelize.query('UPDATE countries SET country_name = ?, region_id = ? WHERE id = ? ', {
+    updateCountryById : ( id,country_name) => {
+        return sequelize.query('UPDATE countries SET country_name = ? WHERE id = ? ', {
             type: sequelize.QueryTypes.PUT,
-            replacements: [region_id,country_name ,id]
+            replacements: [country_name ,id]
         });
     },//ok!!!
 
@@ -150,10 +150,10 @@ const regionsQueries = {
     },//ok!!!
 
     //Editar Ciudad
-    updateCityById : ( id,city_name,country_id) => {
-        return sequelize.query('UPDATE cities SET city_name = ?, country_id = ? WHERE id = ? ', {
+    updateCityById : ( id,city_name) => {
+        return sequelize.query('UPDATE cities SET city_name = ? WHERE id = ? ', {
             type: sequelize.QueryTypes.PUT,
-            replacements: [city_name, country_id,id]
+            replacements: [city_name,id]
         });
     },//ok!!!!
 

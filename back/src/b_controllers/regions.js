@@ -126,10 +126,10 @@ const regions = {
 
     // Actualización de datos de País
     updateCountry: async (req,res) => {
-        const {country_name,region_id } = req.body;
+        const {country_name} = req.body;
         const id = req.params.id;
         try {
-            await regionsQueries.updateCountryById(id,country_name, region_id);
+            await regionsQueries.updateCountryById(id,country_name);
             res.status(200).send(new Response (false,200,"País Actualizado Exitosamente",""));
         } catch (error) {
             res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
@@ -184,10 +184,10 @@ const regions = {
 
     // Actualización de datos de Ciudad
     updateCity: async (req,res) => {
-        const {city_name,country_id} = req.body;
+        const {city_name} = req.body;
         const id = parseInt(req.params.id);
         try {
-            await regionsQueries.updateCityById(id,city_name, country_id);
+            await regionsQueries.updateCityById(id,city_name);
             res.status(200).send(new Response (false,200,"Ciudad Actualizada Exitosamente",""))
         } catch (error) {
             res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
