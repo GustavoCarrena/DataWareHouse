@@ -47,7 +47,8 @@
 
         <b-button v-if="selected.length>0" size="sm" class="col-2 mr-2 btnppal" variant="outline-danger" @click="clearSelected(), cancel()">
             <div class="c-btn">
-                <span>Usuarios seleccionados : {{selected.length}}</span>
+                <span>Usuarios seleccionados : </span>
+                <strong>{{selected.length}}</strong>
                 <span>Cancelar Seleccion</span>
             </div>
         </b-button>
@@ -72,18 +73,28 @@
             <b-form-select name="comId" class="mt-3 input" v-model="contactSelected.company_id" 
             :options="companiesOptions">
             </b-form-select>
-            
+
+            <label class="lab" for="reId"><strong>Región</strong></label>
+            <b-form-select name="reId" class="mt-3 input" v-model="contactSelected.region_id" 
+            :options="regionsOptions">
+            </b-form-select>
+
+            <label class="lab" for="coId"><strong>País</strong></label>
+            <b-form-select name="coId" class="mt-3 input" v-model="contactSelected.country_id" 
+            :options="countriesOptions">
+            </b-form-select>
+
             <label class="lab" for="ciId"><strong>Ciudad</strong></label>
             <b-form-select name="ciId" class="mt-3 input" v-model="contactSelected.city_id" 
-            :options="[{ value: 3, text: 'Toronto' },{ value: 35, text: 'Buenos Aires' },]">
+            :options="citiesOptions">
             </b-form-select>
-            
+
             <label class="lab" for="cliAd"><strong>Dirección</strong></label>
             <input name="cliAd" type="text" v-model="contactSelected.clientAddress" class="form-control mt-3 input" />
             
             <label class="lab" for="porp"><strong>Interés</strong></label>
             <b-form-select name="porp" class="mt-3 input" v-model="contactSelected.porposal_id" 
-            :options="[{ value: 1, text: '0%' },{ value: 2, text: '25%' },]">
+            :options="interestOptions">
             </b-form-select>
             
             <label class="lab" for="whatAc"><strong>Cuenta de Usuario Whatsapp</strong></label>
@@ -129,6 +140,10 @@ export default {
             contactSelected: {},
             modalMode: "edit",
             companies:[],
+            regions:[],
+            countries:[],
+            cities:[],
+            interests:[],
             fields: [{
                     key: "status",
                     label: "",
@@ -179,6 +194,10 @@ export default {
     mounted() {
         this.getContactData();
         this.getCompaniesData();
+        this.getRegionsData();
+        this.getCountriesData();
+        this.getCitiesData();
+        this.getInterestData();
     },
 
     computed:{
@@ -191,7 +210,53 @@ export default {
             } else{
                 return [];
             }
-        }
+        },
+        
+        regionsOptions(){
+            if (this.regions.length) {
+                return this.regions.map(region=>({
+                    value: region.region_id,
+                    text: region.region_name
+                }))
+            } else{
+                return [];
+            }
+        },        
+        
+        countriesOptions(){
+            if (this.countries.length) {
+                return this.countries.map(country=>({
+                    value: country.country_id,
+                    text: country.country_name
+                }))
+            } else{
+                return [];
+            }
+        },
+        
+
+        citiesOptions(){
+            if (this.cities.length) {
+                return this.cities.map(city=>({
+                    value: city.city_id,
+                    text: city.city_name
+                }))
+            } else{
+                return [];
+            }
+        },
+        
+        interestOptions(){
+            if (this.interests.length) {
+                return this.interests.map(interest=>({
+                    value: interest.porposal_id,
+                    text: interest.porposal_description
+                }))
+            } else{
+                return [];
+            }
+        },
+
     },
 
     methods: {
@@ -224,8 +289,6 @@ export default {
             this.modalMode = mode;
             this.contactSelected = contact;
             this.$bvModal.show("editModal");
-            console.log(contact);
-
         },
 
         onRowSelected(items) {
@@ -275,7 +338,52 @@ export default {
                 const response = await fetch(url);
                 const data = await response.json();
                 this.companies = data.response
-                console.log(this.companies);
+            } catch (error) {
+                console.log(error);
+            }
+        },
+
+        async getRegionsData() {
+            const url = "http://localhost:3000/regions/getRegionsData";
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                this.regions = data.response
+            } catch (error) {
+                console.log(error);
+            }
+        },        
+
+        async getCountriesData() {
+            // const region_id = this.contact.region_id
+            // console.log(region_id);
+            const url = `http://localhost:3000/regions/getCountriesData/${4}`;
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                this.countries = data.response
+            } catch (error) {
+                console.log(error);
+            }
+        },    
+
+        async getCitiesData() {
+            const url = "http://localhost:3000/regions/getAllCities";
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                this.cities = data.response
+            } catch (error) {
+                console.log(error);
+            }
+        },
+
+        async getInterestData() {
+            const url = "http://localhost:3000/clients/getPorposalInterestData";
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                this.interests = data.response
             } catch (error) {
                 console.log(error);
             }
@@ -292,9 +400,6 @@ export default {
                 error
             }
         },
-
-        
-
 
         async createContact() {
 
@@ -406,7 +511,21 @@ h1 {
     position: relative;
 }
 
-;
+.c-btn[data-v-fdacdde6]{
+    display: flex;
+    width: 100%;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.c-btn strong{
+    padding: 0;
+    color: #043e96;
+    width: 25px;
+    display: inline;
+    font-size: 1.05em;
+}
 
 .top {
     width: 95%;
