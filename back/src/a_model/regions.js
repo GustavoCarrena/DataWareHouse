@@ -32,7 +32,7 @@ const regionsQueries = {
     //Consulta de id y de nombre de regiones
     getRegions: () => {
         return sequelize.query(
-            'SELECT * FROM regions;', 
+            'SELECT id AS region_id, region_name FROM regions;', 
             {type: sequelize.QueryTypes.SELECT});
     },//ok!!!
 
@@ -62,16 +62,12 @@ const regionsQueries = {
     /*=== PAISES ===*/
 
     /*=== Consulta de paises por region ===*/
-    getCountriesByRegion: (regionid) => {
-        resp = sequelize.query(
-            `SELECT  co.id AS country_id, co.country_name AS country_name
-            FROM regions r
-            INNER JOIN countries co
-            ON (r.id = co.region_id)
-            WHERE r.id = ? `, 
+    getCountriesByRegion: (region_id) => {
+        return sequelize.query(
+            `SELECT id AS country_id, country_name FROM countries WHERE region_id = ? `, 
             {
                 type: sequelize.QueryTypes.SELECT,
-                replacements: [regionid]
+                replacements: [region_id]
             });
     },//ok!!!
 
@@ -125,7 +121,7 @@ const regionsQueries = {
 
     getAllCities: () => {
         return sequelize.query(
-            `SELECT  * FROM cities`, 
+            `SELECT * FROM cities`, 
             {type: sequelize.QueryTypes.SELECT});
     },//ok!!!
 
