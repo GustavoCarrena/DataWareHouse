@@ -21,8 +21,6 @@ const regions = {
                         }
                         return countries;
                     },{})
-                    
-                    // console.log(Object.values(reCountries));
                     regions.push({
                         region_id: region.region_id,
                         region_name: region.region_name,
@@ -44,7 +42,6 @@ const regions = {
     getRegionsData: async (req, res) => {
         try {
             const getData = await regionsQueries.getRegions();
-            console.log('getData==>', getData);
             res.status(200).send(new Response(false, 200, "Consulta exitosa", getData));
         } catch (error) {
             res.status(400).send(new Response(true, 400, "No se puede obtener la consulta", ""));
@@ -92,11 +89,11 @@ const regions = {
     // Obetener datos de paises, seleccionados por región a la cual pertenece
     getCountriesData: async (req, res) => {
         try {
-            const region_id = parseInt (req.params.region_id);
-            const getCountriesByRegion = await regionsQueries.getCountriesByRegion(region_id);
-            res.status(200).send(new Response(false, 200, "Consulta exitosa", getCountriesByRegion));
+            const region_id = parseInt(req.params.region_id);
+            const getData = await regionsQueries.getCountriesByRegion(region_id);
+            res.status(200).send(new Response (false,200,"Consulta exitosa",getData))
         } catch (error) {
-            res.status(500).send(new Response(true, 500, "Error interno del servidor", ""));
+            res.status(400).send(new Response(true, 500, "No fue posible obtener la consulta", error.message));
         }
     },//ok!!!
 
