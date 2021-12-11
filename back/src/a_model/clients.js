@@ -6,7 +6,7 @@ const clientsQueries = {
     getClientsView: () => {
         return sequelize.query(
             `SELECT  cl.id AS client_id,cl.firstname, cl.lastname,concat(cl.firstname,' ' ,cl.lastname) AS fullname,cl.email,co.country_name,re.region_name,
-            com.id AS company_id,com.company_name,ci.id AS city_id ,cl.position, por.id AS porposal_id ,por.porposal_description,cl.clientAddress
+            com.id AS company_id,com.company_name,ci.id AS city_id ,cl.position, por.id AS porposal_id ,por.porposal_description AS porposal_description,cl.clientAddress
             ,clcon.whatsapp_account,clcon.whatsapp_preference,clcon.instagram_account, clcon.instagram_preference
             FROM clients cl
             LEFT JOIN cities ci
@@ -54,7 +54,7 @@ const clientsQueries = {
 
     //Obtener lista de id y descripción de interes en las propuestas de contacto
     getPorposalInterestData : (id) => {
-        return sequelize.query(`SELECT * FROM porposal_interest`, {
+        return sequelize.query(`SELECT id AS porposal_id, porposal_description FROM porposal_interest`, {
             type: sequelize.QueryTypes.SELECT,
             
         });
