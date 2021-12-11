@@ -8,13 +8,7 @@ const {regionsQueries} = require('../../a_model/regions');
 
 const regionsMiddlewares = {
 
-    dataFillCountryValidate: async  (req, res, next) => {
-        const region_id = parseInt(req.params.region_id);
-        const getCountriesByRegion = await regionsQueries.getCountriesByRegion(region_id);
-        const region = getCountriesByRegion.find(c => c.region_id === region_id);
-        region === undefined ? res.status(400).send(new Response(true, 400, "No existe el código de Región ingresado","")):
-        next();
-    },//ok!!!
+
 
     dataFillCityValidate: async (req, res, next) => {
         const country_id = req.params.country_id;
