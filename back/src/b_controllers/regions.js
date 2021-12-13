@@ -34,7 +34,7 @@ const regions = {
         } catch (error) {
             res.status(400).send(new Response(true, 400, "No se puede obtener la consulta", error.message ));
         }
-    },//ok!!!
+    },
 
     /*=== REGIONES ===*/
     
@@ -46,7 +46,7 @@ const regions = {
         } catch (error) {
             res.status(400).send(new Response(true, 400, "No se puede obtener la consulta", ""));
         }
-    },//ok!!!
+    },
 
     // Creación de Región
     addRegion: async (req,res) => {
@@ -58,7 +58,7 @@ const regions = {
         } catch (error) {
             res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
         }
-    },//ok!!
+    },
 
     // Actualización de datos de Región
     updateRegion: async (req,res) => {
@@ -70,7 +70,7 @@ const regions = {
         } catch (error) {
             res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
         }
-    },//ok!!!
+    },
 
     // Elimnación de Región
     deleteRegion: async (req,res) => {
@@ -81,7 +81,7 @@ const regions = {
         } catch (error) {
             res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
         }
-    },//ok!!
+    },
 
 
     /*=== PAISES ===*/
@@ -95,7 +95,7 @@ const regions = {
         } catch (error) {
             res.status(400).send(new Response(true, 500, "No fue posible obtener la consulta", error.message));
         }
-    },//ok!!!
+    },
 
     // Lista de todos los Paises con su Región identificada
     getAllCountryData: async (req, res) => {
@@ -105,7 +105,7 @@ const regions = {
         } catch (error) {
             res.status(400).send(new Response(true, 400, "No se puede obtener la consulta", ""));
         }
-    },//ok!!!
+    },
 
     //Creación de País
     addCountry: async (req,res) => {
@@ -117,8 +117,7 @@ const regions = {
         } catch (error) {
             res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
         }
-    },//OK!!!
-
+    },
 
 
     // Actualización de datos de País
@@ -131,7 +130,7 @@ const regions = {
         } catch (error) {
             res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
         }
-    },//ok!!!
+    },
 
     // Elimnación de País
     deleteCountry: async (req,res) => {
@@ -142,7 +141,7 @@ const regions = {
         } catch (error) {
             res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
         }
-    },//ok!!!
+    },
 
     /*=== CIUDADES ===*/
     
@@ -155,7 +154,7 @@ const regions = {
         } catch (error) {
             res.status(500).send(new Response(true, 500, "Error interno del servidor", ""));
         }
-    },//ok!!!
+    },
 
     // Lista de todos las ciudades con su Pais y Región
     getAllCityData: async (req, res) => {
@@ -177,7 +176,7 @@ const regions = {
         } catch (error) {
             res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
         }
-    },//ok!!
+    },
 
     // Actualización de datos de Ciudad
     updateCity: async (req,res) => {
@@ -189,7 +188,7 @@ const regions = {
         } catch (error) {
             res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
         }
-    },//ok!!!
+    },
 
     // Eliminación de Ciudad
     deleteCity: async (req,res) => {
@@ -200,8 +199,8 @@ const regions = {
         } catch (error) {
             res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
         }
-    },//ok!!
+    },
 
-}//fin de regions
+}
 
 module.exports = {regions};

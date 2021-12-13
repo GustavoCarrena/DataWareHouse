@@ -3,18 +3,18 @@
     <header>
 
         <div class="first-header">
-            <h1 class="row col-5">Gestion de Usuarios</h1>
+            <h1 class="row col-5">Gestion de Compañias</h1>
             <b-nav class="navbar">
+                <b-nav-item v-if="usersAccess()===true" href="http://localhost:8080/employee">Usuarios</b-nav-item>
                 <b-nav-item href="http://localhost:8080/contacts">Contactos</b-nav-item>
                 <b-nav-item href="http://localhost:8080/regions">Regiones</b-nav-item>
-                <b-nav-item href="http://localhost:8080/companies">Compañias</b-nav-item>
                 <b-nav-item @click="logOut()" href="http://localhost:8080">Salir</b-nav-item>
             </b-nav>
         </div>
 
         <div class="second-header">
             <b-button size="sm" class="col-2 mr-2 btnppal" variant="success" @click="showEdit({},'create')">
-                Alta de Usuario
+                Alta de Compañía
             </b-button>
             <div class="search">
                 <div class="search-box">
@@ -29,7 +29,7 @@
         </div>
     </header>
 
-    <b-table bordered ref="selectableTable" hover selectable select-mode="multi" responsive="true" sticky-header="62vh" :filter="filter" :items="employees" :fields="fields" @row-selected="onRowSelected">
+    <b-table bordered ref="selectableTable" hover selectable select-mode="multi" responsive="true" sticky-header="62vh" :filter="filter" :items="companies" :fields="fields" @row-selected="onRowSelected">
         <template #cell(status)="{ rowSelected }">
             <input name="checkbox" type="checkbox" :checked="rowSelected" disabled />
         </template>
@@ -56,34 +56,38 @@
     <b-modal id="deleteInfo">
         Registro Eliminado Exitosamente
     </b-modal>
+
     <b-modal class="editModal" id="editModal" title="Ingreso de Datos" hide-footer>
         <form>
             <label class="lab" for="name">* <strong>Nombre</strong></label>
-            <input name="name" type="text" v-model="employeeSelected.firstname" class="form-control input" />
-            <label class="lab" for="lastname">* <strong>Apellido</strong></label>
-            <input name="lastname" type="text" v-model="employeeSelected.lastname" class="form-control mt-3 input" />
+            <input name="name" type="text" v-model="companySelected.company_name" class="form-control input" />
+            <label class="lab" for="address">* <strong>Dirección</strong></label>
+            <input name="address" type="text" v-model="companySelected.company_address" class="form-control mt-3 input" />
+
+            <label class="lab" for="reId">* <strong>Región</strong></label>
+            <b-form-select name="reId" class="mt-3 input" v-model="selectedRegion" :options="regionsOptions">
+            </b-form-select>
+
+            <label class="lab" for="coId">* <strong>País</strong></label>
+            <b-form-select name="coId" class="mt-3 input" v-model="selectedCountry" :disabled="!selectedRegion" :options="countriesOptions">
+            </b-form-select>
+
+            <label class="lab" for="ciId">* <strong>Ciudad</strong></label>
+            <b-form-select name="ciId" class="mt-3 input" v-model="companySelected.city_id" :disabled="!selectedCountry || !cities.length" :options="citiesOptions">
+            </b-form-select>
+
             <label class="lab" for="email">* <strong>Correo Electronico</strong></label>
             <small><i> (Formato requerido : xxx@xxx.xxx)</i></small>
-            <input name="email" type="text" v-model="employeeSelected.email" class="form-control mt-3 input" />
-            <label class="lab" for="role">* <strong>Permisos</strong></label>
-            <b-form-select name="role" class="mt-3 input" v-model="employeeSelected.role_id" :options="[
-            { value: 'USER', text: 'Usuario' },
-            { value: 'ADMI', text: 'Usuario administrador' },
-          ]">
-            </b-form-select>
-            <label class="lab" for="pass">* <strong>Contraseña</strong></label>
-            <small><i> (minimo 4 caracteres)</i></small>
-            <input name="pass" type="text" v-model="employeeSelected.user_pass" class="form-control mt-3 input" />
-            <label class="lab" for="passrep">* <strong>Repetir Contraseña</strong></label>
-            <small><i> (debe coincidir con la contraseña)</i></small>
-            <input name="passrep" type="text" v-model="employeeSelected.user_passrep" class="form-control mt-3 input" />
-            <b-button @click="$bvModal.hide('editModal'), getEmployees(), cancel()" class="mt-3 mr-4 mod">
+            <input name="email" type="text" v-model="companySelected.company_email" class="form-control mt-3 input" />
+            <label class="lab" for="phone">* <strong>Teléfono</strong></label>
+            <input name="phone" type="text" v-model="companySelected.company_phone" class="form-control mt-3 input" />
+            <b-button @click="$bvModal.hide('editModal'), getCompanies(), cancel()" class="mt-3 mr-4 mod">
                 Cancelar
             </b-button>
-            <b-button v-if="modalMode === 'edit'" @click="updateEmployee()" class="mt-3 mod" variant="success">
+            <b-button v-if="modalMode === 'edit'" @click="updatecompanies()" class="mt-3 mod" variant="success">
                 Actualizar
             </b-button>
-            <b-button v-else @click="createEmployee()" class="mt-3 mod" variant="success">crear
+            <b-button v-else @click="createCompany()" class="mt-3 mod" variant="success">crear
             </b-button>
             <small><i> (*) Campos obligatorios</i></small>
         </form>
@@ -93,44 +97,57 @@
 
 <script>
 export default {
-    name: "Employee",
+    name: "Company",
     data() {
         return {
             filter: '',
             boxOne: '',
-            employees: [],
-            filteredEmployees: [],
+            companies: [],
+            filteredCompanies: [],
             selected: [],
-            employeeSelected: {},
+            companySelected: {},
+            regions: [],
+            selectedRegion: null,
+            selectedCountry: null,
+            countries: [],
+            cities: [],
+
             modalMode: "edit",
             fields: [{
                     key: "status",
                     label: "",
                 },
                 {
-                    key: "id",
+                    key: "company_name",
                     sortable: true,
+                    label: "Nombre"
                 },
                 {
-                    key: "firstname",
+                    key: "company_phone",
                     sortable: true,
-                    label: "Nombre",
+                    label: "Teléfono",
                 },
                 {
-                    key: "lastname",
+                    key: "company_email",
                     sortable: true,
-                    label: "Apellido",
+                    label: "Email",
                 },
                 {
-                    key: "email",
+                    key: "region_name",
                     sortable: true,
-                    label: "Correo",
+                    label: "Región",
                 },
                 {
-                    key: "role_description",
+                    key: "country_name",
                     sortable: true,
-                    label: "Permisos",
+                    label: "País",
                 },
+                {
+                    key: "city_name",
+                    sortable: true,
+                    label: "Ciudad",
+                },
+
                 {
                     key: "actions",
                     sortable: false,
@@ -140,13 +157,92 @@ export default {
         };
     },
     mounted() {
-        this.getEmployees();
+        this.getCompanies();
+        this.getRegionsData();
+    },
+
+    watch: {
+        selectedRegion(value) {
+            this.companySelected.region_id = value;
+            this.countries = this.getCountriesByRegion(value);
+            this.cities = [];
+        },
+
+        selectedCountry(value) {
+            this.companySelected.country_id = value
+            this.cities = value ? this.getCitiesByCountry(value) : [];
+        },
+    },
+
+    computed: {
+
+        regionsOptions() {
+            if (this.regions.length) {
+                return this.regions.map(region => this.getObjectOption(region.region_id, region.region_name))
+            } else {
+                return [];
+            }
+        },
+
+        countriesOptions() {
+            if (this.countries.length) {
+                return this.countries.map(country => this.getObjectOption(country.country_id, country.country_name))
+            } else {
+                return [];
+            }
+
+        },
+
+        citiesOptions() {
+            if (this.cities.length) {
+                return this.cities.map(city => this.getObjectOption(city.city_id, city.city_name))
+            } else {
+                return [];
+            }
+        },
+
     },
 
     methods: {
 
-        logOut(){
+        logOut() {
             localStorage.clear();
+        },
+
+        usersAccess() {
+            if (localStorage.getItem('role') === 'ADMI') {
+                return true;
+            } else {
+                return false;
+            }
+        },
+
+        getCountriesByRegion(regionId) {
+            const region = this.regions.find(region => region.region_id === regionId)
+            return region.countries
+        },
+
+        getCitiesByCountry(countryId) {
+            const country = this.countries.find(country => country.country_id === countryId)
+            return country.cities
+        },
+
+        getObjectOption(value, text) {
+            return {
+                value,
+                text
+            }
+        },
+
+        async getRegionsData() {
+            const url = "http://localhost:3000/regions/getAllRegionsData";
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                this.regions = data.response
+            } catch (error) {
+                console.log(error);
+            }
         },
 
         success() {
@@ -164,7 +260,7 @@ export default {
                     this.boxOne = value
                     const isSelected = this.selected.map(e => e.id).length
                     value === true && isSelected > 0 ?
-                        (this.deleteEmployeesById(), this.success()) :
+                        (this.deleteCompanyById(), this.success()) :
                         isSelected == 0 ? this.$bvModal.msgBoxOk('Debe seleccionar al menos 1 registro para eliminar') :
                         this.cancel()
                 })
@@ -173,9 +269,11 @@ export default {
                 });
         },
 
-        showEdit(employee, mode = "edit") {
+        showEdit(company, mode = "edit") {
             this.modalMode = mode;
-            this.employeeSelected = employee;
+            this.companySelected = company;
+            this.selectedRegion = company.region_id;
+            this.selectedCountry = company.country_id;
             this.$bvModal.show("editModal");
         },
 
@@ -187,21 +285,14 @@ export default {
             this.$refs.selectableTable.clearSelected();
         },
 
-        getDuplicatedEmail() {
-            const dataTable = this.employees.map(e => e.email)
-            const emailInsert = this.employeeSelected.email
-            return dataTable.includes(emailInsert)
-        },
-
         disableSubmit() {
-            const firstname = this.employeeSelected.firstname
-            const lastname = this.employeeSelected.lastname
-            const email = this.employeeSelected.email;
+            const name = this.companySelected.company_name
+            const city = this.companySelected.city_id
+            const email = this.companySelected.company_email;
             const emailRules = /.+@.+/.test(email);
-            const role = this.employeeSelected.role_id
-            const pass = this.employeeSelected.user_pass
-            const passrep = this.employeeSelected.user_passrep;
-            return !firstname || !lastname || !email || !role || pass !== passrep || pass.length < 4 || emailRules === false
+            const address = this.companySelected.company_address;
+            const phone = this.companySelected.company_phone;
+            return !name || !city || !email || !address || !phone || emailRules === false
         },
 
         validateNewEmail(oldEmail, newEmail) {
@@ -220,27 +311,33 @@ export default {
             }
         },
 
-        async getEmployees() {
-            const url = "http://localhost:3000/employees/employeesData";
+        async getCompanies() {
+            const url = "http://localhost:3000/companies/getAllCompaniesData";
             try {
                 const response = await fetch(url);
                 const data = await response.json();
-                this.employees = data.response
+                this.companies = data.response
             } catch (error) {
                 error
             }
         },
 
-        async createEmployee() {
+        async createCompany() {
             const formatDataValidate = this.disableSubmit()
-            const duplicatedEmail = this.getDuplicatedEmail()
-            if (!formatDataValidate && !duplicatedEmail) {
+            if (!formatDataValidate) {
                 try {
-                    const url = "http://localhost:3000/employees/addEmployees";
+                    const url = "http://localhost:3000/companies/addCompany";
                     const token = localStorage.getItem('token')
+                    const payload = {
+                        company_name: this.companySelected.company_name,
+                        city_id: this.companySelected.city_id,
+                        company_address: this.companySelected.company_address,
+                        email: this.companySelected.company_email,
+                        phone: this.companySelected.company_phone
+                    }
                     const response = await fetch(url, {
                         method: "POST",
-                        body: JSON.stringify(this.employeeSelected),
+                        body: JSON.stringify(payload),
                         headers: {
                             "Content-Type": "application/json",
                             Authorization: 'Bearer' + ' ' + token
@@ -250,43 +347,8 @@ export default {
                     if (data.status === 401 || data.status === 404) {
                         this.$bvModal.msgBoxOk(data.response)
                     } else {
-                        this.getEmployees();
+                        this.getCompanies();
                         this.$bvModal.hide("editModal");
-                        this.success()
-                    }
-
-                } catch (error) {
-                    error
-                }
-            } else {
-                duplicatedEmail ?
-                    this.$bvModal.msgBoxOk(`El email "${this.employeeSelected.email}" ya se encuentra registrado`) :
-                    this.$bvModal.msgBoxOk('Alguno de los formatos requeridos no son válidos o existen campos vacíos');
-            }
-        },
-
-        async updateEmployee() {
-            const formatDataValidate = this.disableSubmit()
-            if (this.validateNewEmail(this.employees, this.employeeSelected.email) == true) {
-                this.$bvModal.msgBoxOk(`El email "${this.employeeSelected.email}" ya se encuentra registrado`)
-            } else if (!formatDataValidate) {
-                try {
-                    const url = `http://localhost:3000/employees/updateEmployeesData/${this.employeeSelected.id}`;
-                    const token = localStorage.getItem('token')
-                    const response = await fetch(url, {
-                        method: "PUT",
-                        body: JSON.stringify(this.employeeSelected),
-                        headers: {
-                            "Content-Type": "application/json",
-                            Authorization: 'Bearer' + ' ' + token
-                        },
-                    });
-                    const data = await response.json()
-                    if (data.status === 401 || data.status === 404) {
-                        this.$bvModal.msgBoxOk(data.response)
-                    } else {
-                        this.$bvModal.hide("editModal")
-                        await this.getEmployees()
                         this.success()
                     }
                 } catch (error) {
@@ -297,25 +359,62 @@ export default {
             }
         },
 
-        async deleteEmployee(id) {
+        async updatecompanies() {
             try {
-                const url = `http://localhost:3000/employees/deleteEmployeesData/${id}`;
+                const url = `http://localhost:3000/companies/updateCompany/${this.companySelected.id}`;
+                const payload = {
+                    company_name: this.companySelected.company_name,
+                    city_id: this.companySelected.city_id,
+                    company_address: this.companySelected.company_address,
+                    email: this.companySelected.company_email,
+                    phone: this.companySelected.company_phone
+                }
                 const token = localStorage.getItem('token')
-                await fetch(url, {
+                const response = await fetch(url, {
+                    method: "PUT",
+                    body: JSON.stringify(payload),
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: 'Bearer' + ' ' + token
+                    },
+                });
+                const data = await response.json()
+                if (data.status === 401 || data.status === 404) {
+                    this.$bvModal.msgBoxOk(data.response)
+                } else {
+                    this.$bvModal.hide("editModal")
+                    await this.getCompanies()
+                    this.success()
+                }
+            } catch (error) {
+                error
+            }
+        },
+
+        async deleteCompany(id) {
+            try {
+                const url = `http://localhost:3000/companies/deleteCompany/${id}`;
+                const token = localStorage.getItem('token')
+                const response = await fetch(url, {
                     method: "DELETE",
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: 'Bearer' + ' ' + token
                     },
                 });
-                await this.getEmployees();
+                const data = await response.json()
+                if (data.status === 401 || data.status === 404) {
+                    this.$bvModal.msgBoxOk(data.response)
+                } else {
+                    await this.getCompanies();
+                }
             } catch (error) {
                 error
             }
         },
 
-        deleteEmployeesById() {
-            this.selected.forEach((employee) => this.deleteEmployee(employee.id));
+        deleteCompanyById() {
+            this.selected.forEach((company) => this.deleteCompany(company.id));
         },
     },
 };

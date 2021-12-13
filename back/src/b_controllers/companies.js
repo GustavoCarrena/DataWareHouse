@@ -24,7 +24,7 @@ const companies = {
         } catch (error) {
             res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
         }
-    },//ok!!!
+    },
 
     // Actualización de datos de las Compañías
     updateCompany: async (req,res) => {
@@ -35,9 +35,9 @@ const companies = {
             res.status(200).send(new Response (false,200,"Compañia Actualizada Exitosamente",""))
         } catch (error) {
             console.log(error);
-            res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
+            res.status(500).send(new Response(true, 400, "No se pudo realizar la operación", error));
         };
-    },//ok!!!
+    },
     
         // Eliminación de Compañia
         deleteCompany: async (req,res) => {
@@ -46,9 +46,9 @@ const companies = {
                 await companiesQueries.deleteCompanyById(id);
                 res.status(200).send(new Response (false,200,"Compañía Eliminada Exitosamente",req.body.id))
             } catch (error) {
-                res.status(500).send(new Response(true, 500, "Error interno del servidor", error));
+                res.status(500).send(new Response(true, 400, "No se pudo realizar la operación", error));
             }
-        },//ok!!!
+        },
 
 };
 

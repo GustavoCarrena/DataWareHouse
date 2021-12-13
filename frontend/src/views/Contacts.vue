@@ -5,10 +5,10 @@
         <div class="first-header">
             <h1 class="row col-5">Gestion de Contactos</h1>
             <b-nav class="navbar">
-                <b-nav-item href="http://localhost:8080/employee">Usuarios</b-nav-item>
+                <b-nav-item v-if="usersAccess()===true" href="http://localhost:8080/employee">Usuarios</b-nav-item>
                 <b-nav-item href="http://localhost:8080/regions">Regiones</b-nav-item>
-                <b-nav-item href="#">Compañias</b-nav-item>
-                <b-nav-item href="http://localhost:8080">Salir</b-nav-item>
+                <b-nav-item href="http://localhost:8080/companies">Compañias</b-nav-item>
+                <b-nav-item @click="logOut()" href="http://localhost:8080">Salir</b-nav-item>
             </b-nav>
         </div>
 
@@ -66,55 +66,49 @@
             <input name="lastname" type="text" v-model="contactSelected.lastname" class="form-control mt-3 input" />
             <label class="lab" for="position"><strong>Cargo</strong></label>
             <input name="position" type="text" v-model="contactSelected.position" class="form-control mt-3 input" />
-            <label class="lab" for="email"><strong>Email</strong></label>
+            <label class="lab" for="email"><strong>Email</strong></label> <br>
+            <small><i>Formato "xx@xx.xx" requerido</i></small>
             <input name="email" type="text" v-model="contactSelected.email" class="form-control mt-3 input" />
-            
+
             <label class="lab" for="comId"><strong>Compañia</strong></label>
-            <b-form-select name="comId" class="mt-3 input" v-model="contactSelected.company_id" 
-            :options="companiesOptions">
+            <b-form-select name="comId" class="mt-3 input" v-model="contactSelected.company_id" :options="companiesOptions">
             </b-form-select>
 
             <label class="lab" for="reId"><strong>Región</strong></label>
-            <b-form-select name="reId" class="mt-3 input" v-model="contactSelected.region_id" 
-            :options="regionsOptions">
+            <b-form-select name="reId" class="mt-3 input" v-model="selectedRegion" :options="regionsOptions">
             </b-form-select>
 
             <label class="lab" for="coId"><strong>País</strong></label>
-            <b-form-select name="coId" class="mt-3 input" v-model="contactSelected.country_id" 
-            :options="countriesOptions">
+            <b-form-select name="coId" class="mt-3 input" v-model="selectedCountry" :disabled="!selectedRegion" :options="countriesOptions">
             </b-form-select>
 
             <label class="lab" for="ciId"><strong>Ciudad</strong></label>
-            <b-form-select name="ciId" class="mt-3 input" v-model="contactSelected.city_id" 
-            :options="citiesOptions">
+            <b-form-select name="ciId" class="mt-3 input" v-model="contactSelected.city_id" :disabled="!selectedCountry || !cities.length" :options="citiesOptions">
             </b-form-select>
 
             <label class="lab" for="cliAd"><strong>Dirección</strong></label>
-            <input name="cliAd" type="text" v-model="contactSelected.clientAddress" class="form-control mt-3 input" />
-            
+            <input name="cliAd" type="text" v-model="contactSelected.clientAddress" :disabled="!contactSelected.city_id" class="form-control mt-3 input" />
+
             <label class="lab" for="porp"><strong>Interés</strong></label>
-            <b-form-select name="porp" class="mt-3 input" v-model="contactSelected.porposal_id" 
-            :options="interestOptions">
+            <b-form-select name="porp" class="mt-3 input" v-model="contactSelected.porposal_id" :options="interestOptions">
             </b-form-select>
-            
+
             <label class="lab" for="whatAc"><strong>Cuenta de Usuario Whatsapp</strong></label>
             <input name="whatAc" type="text" v-model="contactSelected.whatsapp_account" class="form-control mt-3 input" />
             <label class="lab" for="whatPref"><strong>Preferencia</strong></label>
-            <b-form-select name="whatPref" class="mt-3 input" v-model="contactSelected.whatsapp_preference" 
-            :options="[{ value: 'Sin Preferencia', text: 'Sin Preferencia' },{ value: 'Canal Favorito', text: 'Canal Favorito' },{ value: 'No Molestar', text: 'No Molestar' }]">
-            </b-form-select>            
-            
+            <b-form-select name="whatPref" class="mt-3 input" v-model="contactSelected.whatsapp_preference" :options="[{ value: 'Sin Preferencia', text: 'Sin Preferencia' },{ value: 'Canal Favorito', text: 'Canal Favorito' },{ value: 'No Molestar', text: 'No Molestar' }]">
+            </b-form-select>
+
             <label class="lab" for="instAc"><strong>Cuenta de Usuario Instagram</strong></label>
             <input name="instAc" type="text" v-model="contactSelected.instagram_account" class="form-control mt-3 input" />
             <label class="lab" for="instPref"><strong>Preferencia</strong></label>
-            <b-form-select name="instPref" class="mt-3 input" v-model="contactSelected.instagram_preference" 
-            :options="[{ value: 'Sin Preferencia', text: 'Sin Preferencia' },{ value: 'Canal Favorito', text: 'Canal Favorito' },{ value: 'No Molestar', text: 'No Molestar' }]">
-            </b-form-select>            
+            <b-form-select name="instPref" class="mt-3 input" v-model="contactSelected.instagram_preference" :options="[{ value: 'Sin Preferencia', text: 'Sin Preferencia' },{ value: 'Canal Favorito', text: 'Canal Favorito' },{ value: 'No Molestar', text: 'No Molestar' }]">
+            </b-form-select>
 
             <b-button @click="$bvModal.hide('editModal'), getContactData(), cancel()" class="mt-3 mr-4 mod">
                 Cancelar
             </b-button>
-            <b-button v-if="modalMode === 'edit'" @click="getContactData()" class="mt-3 mod" variant="success">
+            <b-button v-if="modalMode === 'edit'" @click="updateContact()" class="mt-3 mod" variant="success">
                 Actualizar
             </b-button>
             <b-button v-else @click="createContact()" class="mt-3 mod" variant="success">Crear
@@ -122,8 +116,7 @@
             <small><i> (*) Campos obligatorios</i></small>
         </form>
     </b-modal>
-            
-            
+
 </div>
 </template>
 
@@ -139,11 +132,13 @@ export default {
             selected: [],
             contactSelected: {},
             modalMode: "edit",
-            companies:[],
-            regions:[],
-            countries:[],
-            cities:[],
-            interests:[],
+            companies: [],
+            regions: [],
+            selectedRegion: null,
+            selectedCountry: null,
+            countries: [],
+            cities: [],
+            interests: [],
             fields: [{
                     key: "status",
                     label: "",
@@ -194,65 +189,68 @@ export default {
     mounted() {
         this.getContactData();
         this.getCompaniesData();
-        this.getRegionsData();
-        this.getCountriesData();
-        this.getCitiesData();
         this.getInterestData();
+        this.getRegionsData();
     },
 
-    computed:{
-        companiesOptions(){
+    watch: {
+        selectedRegion(value) {
+            this.contactSelected.region_id = value;
+            this.countries = this.getCountriesByRegion(value);
+            this.cities = [];
+        },
+
+        selectedCountry(value) {
+            this.contactSelected.country_id = value
+            this.cities = value ? this.getCitiesByCountry(value) : [];
+        },
+    },
+
+    computed: {
+        companiesOptions() {
             if (this.companies.length) {
-                return this.companies.map(company=>({
+                return this.companies.map(company => ({
                     value: company.id,
                     text: company.company_name
                 }))
-            } else{
+            } else {
                 return [];
             }
         },
-        
-        regionsOptions(){
-            if (this.regions.length) {
-                return this.regions.map(region=>({
-                    value: region.region_id,
-                    text: region.region_name
-                }))
-            } else{
-                return [];
-            }
-        },        
-        
-        countriesOptions(){
-            if (this.countries.length) {
-                return this.countries.map(country=>({
-                    value: country.country_id,
-                    text: country.country_name
-                }))
-            } else{
-                return [];
-            }
-        },
-        
 
-        citiesOptions(){
-            if (this.cities.length) {
-                return this.cities.map(city=>({
-                    value: city.city_id,
-                    text: city.city_name
-                }))
-            } else{
-                return [];
-            }
-        },
-        
-        interestOptions(){
+        interestOptions() {
             if (this.interests.length) {
-                return this.interests.map(interest=>({
+                return this.interests.map(interest => ({
                     value: interest.porposal_id,
                     text: interest.porposal_description
                 }))
-            } else{
+            } else {
+                return [];
+            }
+        },
+
+        regionsOptions() {
+            if (this.regions.length) {
+                return this.regions.map(region => this.getObjectOption(region.region_id, region.region_name))
+            } else {
+                return [];
+            }
+        },
+
+        countriesOptions() {
+
+            if (this.countries.length) {
+                return this.countries.map(country => this.getObjectOption(country.country_id, country.country_name))
+            } else {
+                return [];
+            }
+
+        },
+
+        citiesOptions() {
+            if (this.cities.length) {
+                return this.cities.map(city => this.getObjectOption(city.city_id, city.city_name))
+            } else {
                 return [];
             }
         },
@@ -260,6 +258,28 @@ export default {
     },
 
     methods: {
+        
+        usersAccess(){
+            if (localStorage.getItem('role') === 'ADMI') {
+                return true; 
+            } else {
+                return false;
+            }
+        },
+
+        logOut(){
+            localStorage.clear();
+        },
+
+        getCountriesByRegion(regionId) {
+            const region = this.regions.find(region => region.region_id === regionId)
+            return region.countries
+        },
+
+        getCitiesByCountry(countryId) {
+            const country = this.countries.find(country => country.country_id === countryId)
+            return country.cities
+        },
 
         success() {
             this.$alertify.success('OPERACIÓN EXITOSA');
@@ -276,7 +296,7 @@ export default {
                     this.boxOne = value
                     const isSelected = this.selected.map(e => e.id).length
                     value === true && isSelected > 0 ?
-                        (this.deleteEmployeesById(), this.success()) :
+                        (this.deleteContactById(), this.success()) :
                         isSelected == 0 ? this.$bvModal.msgBoxOk('Debe seleccionar al menos 1 registro para eliminar') :
                         this.cancel()
                 })
@@ -288,6 +308,8 @@ export default {
         showEdit(contact, mode = "edit") {
             this.modalMode = mode;
             this.contactSelected = contact;
+            this.selectedRegion = contact.region_id;
+            this.selectedCountry = contact.country_id;
             this.$bvModal.show("editModal");
         },
 
@@ -300,35 +322,61 @@ export default {
         },
 
         getDuplicatedEmail() {
-            const dataTable = this.employees.map(e => e.email)
-            const emailInsert = this.employeeSelected.email
+            const dataTable = this.contacts.map(e => e.email)
+            const emailInsert = this.contactSelected.email
             return dataTable.includes(emailInsert)
         },
 
         disableSubmit() {
-            const firstname = this.employeeSelected.firstname
-            const lastname = this.employeeSelected.lastname
-            const email = this.employeeSelected.email;
+            const firstname = this.contactSelected.firstname;
+            const lastname = this.contactSelected.lastname;
+            const position = this.contactSelected.position;
+            const email = this.contactSelected.email;
+            const company_id = this.contactSelected.company_id;
+            const city_id = this.contactSelected.city_id;
+            const clientAddress = this.contactSelected.clientAddress;
+            const porposal_id = this.contactSelected.porposal_id;
+            const whatsapp_account = this.contactSelected.whatsapp_account;
+            const whatsapp_preference = this.contactSelected.whatsapp_preference;
+            const instagram_account = this.contactSelected.instagram_account;
+            const instagram_preference = this.contactSelected.instagram_preference;
             const emailRules = /.+@.+/.test(email);
-            const role = this.employeeSelected.role_id
-            const pass = this.employeeSelected.user_pass
-            const passrep = this.employeeSelected.user_passrep;
-            return !firstname || !lastname || !email || !role || pass !== passrep || pass.length < 4 || emailRules === false
+            return !firstname || !lastname || !email || !position || !company_id ||
+                !city_id || emailRules === false || !clientAddress || !porposal_id || !whatsapp_account ||
+                !whatsapp_preference || !instagram_account || !instagram_preference
         },
 
         validateNewEmail(oldEmail, newEmail) {
-            const searchEmail = oldEmail.reduce((acc, users) => {
-                acc[users.email] = ++acc[users.email] || 0;
+            const searchEmail = oldEmail.reduce((acc, clients) => {
+                acc[clients.email] = ++acc[clients.email] || 0;
                 return acc
             }, {});
-            let duplicatedEmail = oldEmail.filter((user) => {
-                return searchEmail[user.email]
+            let duplicatedEmail = oldEmail.filter((client) => {
+                return searchEmail[client.email]
             });
             const duplicatedEmailMap = duplicatedEmail.map(e => e.email).find(e => e === newEmail)
             for (let i = 0; i < duplicatedEmail.length; i++) {
                 if (duplicatedEmailMap !== undefined) {
                     return true;
                 }
+            }
+        },
+
+        getObjectOption(value, text) {
+            return {
+                value,
+                text
+            }
+        },
+
+        async getRegionsData() {
+            const url = "http://localhost:3000/regions/getAllRegionsData";
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                this.regions = data.response
+            } catch (error) {
+                console.log(error);
             }
         },
 
@@ -343,41 +391,6 @@ export default {
             }
         },
 
-        async getRegionsData() {
-            const url = "http://localhost:3000/regions/getRegionsData";
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                this.regions = data.response
-            } catch (error) {
-                console.log(error);
-            }
-        },        
-
-        async getCountriesData() {
-            // const region_id = this.contact.region_id
-            // console.log(region_id);
-            const url = `http://localhost:3000/regions/getCountriesData/${4}`;
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                this.countries = data.response
-            } catch (error) {
-                console.log(error);
-            }
-        },    
-
-        async getCitiesData() {
-            const url = "http://localhost:3000/regions/getAllCities";
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                this.cities = data.response
-            } catch (error) {
-                console.log(error);
-            }
-        },
-
         async getInterestData() {
             const url = "http://localhost:3000/clients/getPorposalInterestData";
             try {
@@ -385,10 +398,9 @@ export default {
                 const data = await response.json();
                 this.interests = data.response
             } catch (error) {
-                console.log(error);
+                error;
             }
         },
-
 
         async getContactData() {
             const url = "http://localhost:3000/clients/getClientsView";
@@ -402,10 +414,59 @@ export default {
         },
 
         async createContact() {
+            const formatDataValidate = this.disableSubmit()
+            const duplicatedEmail = this.getDuplicatedEmail()
 
+            if (!formatDataValidate && !duplicatedEmail) {
+                try {
+                    const url = `http://localhost:3000/clients/addClient`;
+
+                    let payload = {
+                        firstname: this.contactSelected.firstname,
+                        lastname: this.contactSelected.lastname,
+                        position: this.contactSelected.position,
+                        email: this.contactSelected.email,
+                        company_id: this.contactSelected.company_id,
+                        city_id: this.contactSelected.city_id,
+                        clientAddress: this.contactSelected.clientAddress,
+                        porposal_id: this.contactSelected.porposal_id,
+                        whatsapp_account: this.contactSelected.whatsapp_account,
+                        whatsapp_preference: this.contactSelected.whatsapp_preference,
+                        instagram_account: this.contactSelected.instagram_account,
+                        instagram_preference: this.contactSelected.instagram_preference
+                    };
+                    const token = localStorage.getItem('token')
+                    const response = await fetch(url, {
+                        method: "POST",
+                        body: JSON.stringify(payload),
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: 'Bearer' + ' ' + token
+                        },
+                    });
+                    const data = await response.json()
+                    if (data.status === 401 || data.status === 404) {
+                        this.$bvModal.msgBoxOk(data.response)
+                    } else {
+                    this.getContactData()
+                    this.$bvModal.msgBoxOk('Contacto creado exitosamente');
+                    payload = ''
+                    this.$bvModal.hide("editModal");
+                    this.$alertify.success('OPERACIÓN EXITOSA');
+                    }
+                } catch (error) {
+                    error
+                }
+            } else {
+                duplicatedEmail ?
+                    this.$bvModal.msgBoxOk(`El email "${this.contactSelected.email}" ya se encuentra registrado`) :
+                    this.$bvModal.msgBoxOk('Alguno de los formatos requeridos no son válidos o existen campos vacíos');
+            }
+        },
+
+        async updateContact() {
             try {
-                const url = `http://localhost:3000/clients/addClient`;
-
+                const url = `http://localhost:3000/clients/updateClient/${this.contactSelected.client_id}`;
                 let payload = {
                     firstname: this.contactSelected.firstname,
                     lastname: this.contactSelected.lastname,
@@ -420,67 +481,53 @@ export default {
                     instagram_account: this.contactSelected.instagram_account,
                     instagram_preference: this.contactSelected.instagram_preference
                 };
-
+                const token = localStorage.getItem('token')
                 const response = await fetch(url, {
-                    method: "POST",
+                    method: "PUT",
                     body: JSON.stringify(payload),
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: 'Bearer' + ' ' + token
                     },
                 });
-                await response.json()
-                this.getContactData();
-                payload = ''
-                this.$bvModal.hide("editModal");
+                const data = await response.json()
+                if (data.status === 401 || data.status === 404) {
+                    this.$bvModal.msgBoxOk(data.response)
+                } else {
+                this.$bvModal.hide("editModal")
                 this.success()
+                await this.getContactData()                    
+                }
             } catch (error) {
                 error
             }
-
         },
 
-        async updateEmployee() {
-            const formatDataValidate = this.disableSubmit()
-            if (this.validateNewEmail(this.employees, this.employeeSelected.email) == true) {
-                this.$bvModal.msgBoxOk(`El email "${this.employeeSelected.email}" ya se encuentra registrado`)
-            } else if (!formatDataValidate) {
-                try {
-                    const url = `http://localhost:3000/employees/updateEmployeesData/${this.employeeSelected.id}`;
-                    await fetch(url, {
-                        method: "PUT",
-                        body: JSON.stringify(this.employeeSelected),
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                    });
-                    this.$bvModal.hide("editModal")
-                    await this.getEmployees()
-                    this.success()
-                } catch (error) {
-                    error
-                }
-            } else {
-                this.$bvModal.msgBoxOk('Alguno de los formatos requeridos no son válidos o existen campos vacíos');
-            }
-        },
-
-        async deleteEmployee(id) {
+        async deleteContact(id) {
             try {
-                const url = `http://localhost:3000/employees/deleteEmployeesData/${id}`;
-                await fetch(url, {
+                const url = `http://localhost:3000/clients/deleteClient/${id}`;
+                const token = localStorage.getItem('token')
+                const response = await fetch(url, {
                     method: "DELETE",
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: 'Bearer' + ' ' + token
                     },
                 });
-                await this.getEmployees();
+                const data = await response.json()
+                    if (data.status === 401 || data.status === 404) {
+                        this.$bvModal.msgBoxOk(data.response)
+                    } else {
+                        await this.getContactData();
+                        this.success()
+                    }
             } catch (error) {
                 error
             }
         },
 
-        deleteEmployeesById() {
-            this.selected.forEach((employee) => this.deleteEmployee(employee.id));
+        deleteContactById() {
+            this.selected.forEach((contact) => this.deleteContact(contact.client_id));
         },
     },
 };
@@ -511,7 +558,7 @@ h1 {
     position: relative;
 }
 
-.c-btn[data-v-fdacdde6]{
+.c-btn[data-v-fdacdde6] {
     display: flex;
     width: 100%;
     flex-flow: row wrap;
@@ -519,7 +566,7 @@ h1 {
     align-items: center;
 }
 
-.c-btn strong{
+.c-btn strong {
     padding: 0;
     color: #043e96;
     width: 25px;
@@ -590,7 +637,7 @@ h1 {
     left: 4.8%;
     padding: 0;
     top: -12px;
-    width: 45%;
+    max-width: 45%;
 }
 
 .navbar a {
@@ -668,7 +715,9 @@ b-table-sticky-header table-responsive-true {
     font-weight: bold !important;
 }
 
-.table td,
+.table td{
+    vertical-align: middle !important;
+}
 .table th {
     padding: 0.4% !important;
     vertical-align: middle !important;

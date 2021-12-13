@@ -1,14 +1,7 @@
 const Response = require('../../../classes/response');
-// const {employeesQueries} = require('../../a_model/employees');
 const {regionsQueries} = require('../../a_model/regions');
-// const {regions} = require('../../b_controllers/regions')
-// const jwt = require('jsonwebtoken');
-// const JWTKEY = process.env.JWTKEY;
-
 
 const regionsMiddlewares = {
-
-
 
     dataFillCityValidate: async (req, res, next) => {
         const country_id = req.params.country_id;
@@ -16,7 +9,7 @@ const regionsMiddlewares = {
         const country = getCountriesByRegion.find(c => c.country_id === country_id);
         country === undefined ? res.status(400).send(new Response(true, 400, "No existe el código de Pais ingresado","")):
         next();
-    },//ok!!!
+    },
     
     /*== Condiciones de ingreso de datos para alta de Regiones ===*/
     dataValidateInsertRegion: async (req, res, next) => {
@@ -37,32 +30,7 @@ const regionsMiddlewares = {
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación", `La región ${regionBodyName} ya se encuentra registrada`)):
 
         next();
-    },//OK!!!!
-
-    /*== Condiciones de ingreso de datos para alta de Paises ===*/
-    dataValidateInsertCountry: async (req, res, next) => {
-        const countryBodyId = req.body.id.toUpperCase();
-        const countryBodyName = req.body.country_name;
-        const countryBodyRegionId = parseInt(req.params.region_id);
-
-        const getCountryAllData = await regionsQueries.getAllCountries()
-        const regionId = await regionsQueries.getRegions()
-
-        const findId = getCountryAllData.map(getCountryAllData => getCountryAllData.id).find(id => id == countryBodyId);
-        const findName = getCountryAllData.map(getCountryAllData => getCountryAllData.country_name).find(name => name == countryBodyName);
-        const findRegion = regionId.map(r => r.id).find(r => r == countryBodyRegionId);
-
-        findId !== undefined ? res.status(400).send(new Response(true, 400, "No se pudo realizar la operación", `El Id del País ${countryBodyId} ya se encuentra registrado`)):
-        findName!== undefined ? res.status(400).send(new Response(true, 400, "No se pudo realizar la operación", `El Nombre del País ${countryBodyName} ya se encuentra registrado`)):
-        findRegion === undefined ? res.status(400).send(new Response(true, 400, "No se pudo realizar la operación", `El Id de la Región ${countryBodyRegionId} no existe. Todo País debe estar asociado a una Región`)): 
-
-        countryBodyId.length !== 3 ? res.status(400).send(new Response(true, 400, "No se pudo realizar la operación", `Los Id de los paises deben ser de 3 caracteres`)):
-        (countryBodyId.length === 0|| countryBodyName.length === 0||countryBodyRegionId.length === 0) ? res.status(400).send(new Response(true, 400, "No se pudo realizar la operación", `Debe ingresar todos los datos`)):
-        (countryBodyId === " "|| countryBodyName === " "||countryBodyRegionId === " ") ? res.status(400).send(new Response(true, 400, "No se pudo realizar la operación", `No puede insertar un caracter vacío`)):       
-        (typeof(countryBodyId) !== "string" || typeof(countryBodyName) !== "string" || typeof(countryBodyRegionId) !== "number") ? res.status(400).send(new Response(true, 400, "No se pudo realizar la operación", `Alguno de los formatos requeridos para los datos ingresados no es válido`)):
-        
-        next();
-    },//OK!!!
+    },
 
        /*== Condiciones de ingreso de datos para alta de Ciudades ===*/
        dataValidateInsertCity: async (req, res, next) => {
@@ -89,42 +57,14 @@ const regionsMiddlewares = {
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación", "No puede insertar un caracter vacío")):       
         
         next();
-    },//ok!!!
-
-    /*== Condiciones de ingreso de datos para actualización de nombre Regiones ===*/
-    dataValidateUpdateRegion: async (req, res, next) => {
-        
-        const id = parseInt(req.params.id);
-        const region_name = req.body.region_name;
-        const regionData = await regionsQueries.getRegions();
-        const findId = regionData.map(r => r.id).find(id => id == req.params['id']);
-
-        (id === null|| region_name.length === 0) ? 
-        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación.", "Debe ingresar todos los datos")):
-        
-        (id === " "||  region_name === " ") ? 
-        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación.", " No puede insertar un caracter vacío")):       
-        
-        (typeof id  !== "number" || typeof region_name  !== "string") ? 
-        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. ", "Alguno de los formatos requeridos para los datos ingresados no es válido")):
-
-        findId === undefined ? 
-        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. ","El Id de la Region no existe")):
-        
-        next();
-    },//ok!!!!
-
+    },
 
     /*== Condiciones de ingreso de datos para actualización de Paises ===*/
     dataValidateUpdateCountry: async (req, res, next) => {
-
         const {country_name,region_id } = req.body;
         const id = req.params.id;
         const countryData = await regionsQueries.getAllCountries(); 
         const findId = countryData.map(co => co.id).find(coid => coid == id);
-        // const regionData = await regionsQueries.getRegions()
-        // const findRegionId = regionData.map(r => r.id).find(r => r == region_id);
-        
         (typeof id !== "string" || typeof(req.body['country_name']) !== "string") ? 
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación", `Alguno de los formatos requeridos para los datos ingresados no es válido`)):
 
@@ -138,11 +78,9 @@ const regionsMiddlewares = {
 
         findId === undefined ? 
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación", `El Id del Pais ${id} no existe`)):
-        // findRegionId === undefined ? 
-        // res.status(400).send(new Response(true, 400, "No se pudo realizar la operación", `El Id de la region ${req.body.region_id} no existe`)):
 
         next();
-    },//ok!!!
+    },
 
 
     /*== Condiciones de ingreso de datos para actualización de Ciudades ===*/
@@ -159,22 +97,8 @@ const regionsMiddlewares = {
         (typeof(id) !== "number" || typeof(req.body['city_name']) !== "string") ? 
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. Alguno de los formatos requeridos para los datos ingresados no es válido", "")):
         next();
-    },//Ok!!!
+    },
     
-    dataValidateDeleteRegion: async (req, res, next) => {
-    
-        const id = parseInt(req.params.id);
-        
-        const getRegions = await regionsQueries.getRegions()
-        const regionExist = getRegions.map(r => r.id).find(r=>r === id) //que exista el codigo de region ingresado
-        
-        typeof id !== "number"  ? 
-        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. El campo debe ser numérico", "")):
-
-        (regionExist === undefined) ?
-        res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. La región que desea eliminar no existe","")):
-        next()
-    },//ok!!!!
 
     dataValidateDeleteCountry: async (req, res, next) => {
     
@@ -193,7 +117,7 @@ const regionsMiddlewares = {
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. El País que desea eliminar no existe","")):
 
         next()
-    },//ok!!!
+    },
 
     dataValidateDeleteCity: async (req, res, next) => {
     
@@ -212,7 +136,7 @@ const regionsMiddlewares = {
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. La ciudad que desea eliminar no existe","")):
 
         next()
-    },//ok!!
+    },
 
 };
 

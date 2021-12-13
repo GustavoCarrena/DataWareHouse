@@ -4,12 +4,11 @@ const {clients} = require('../b_controllers/clients');
 const {employeesMiddlewares} = require('../middlewares/local_middlewares/employees');
 const {clientsMiddlewares} = require('../middlewares/local_middlewares/clients');
 
-router.post('/addClient',/* employeesMiddlewares.authenticateJWT, clientsMiddlewares.dataValidateCreateClient,*/clients.addClient);//ok
-router.get('/getPorposalInterestData', /*employeesMiddlewares.authenticateJWT,*/clients.getPorposalInterestData);//ok
-router.get('/getClientsView', /*employeesMiddlewares.authenticateJWT,*/clients.getClientsView);//ok
-router.get('/getUpdateClientsView/:id', /*employeesMiddlewares.authenticateJWT,*/ clientsMiddlewares.validateClientId, clients.getUpdateClientsView);//ok
-router.put('/updateClient/:company_id/:city_id/:porposal_id/:id', /*employeesMiddlewares.authenticateJWT,*/ clientsMiddlewares.dataValidateUpdateClient,clients.updateClientData);//ok
-router.delete('/deleteClient/:id', /*employeesMiddlewares.authenticateJWT,*/ clientsMiddlewares.validateClientId,clients.deleteClient);//ok
-
+router.post('/addClient',employeesMiddlewares.authenticateJWT,clients.addClient);
+router.get('/getPorposalInterestData', clients.getPorposalInterestData);
+router.get('/getClientsView', clients.getClientsView);
+router.get('/getUpdateClientsView/:id',clientsMiddlewares.validateClientId, clients.getUpdateClientsView);
+router.put('/updateClient/:id', employeesMiddlewares.authenticateJWT,clients.updateClientData);
+router.delete('/deleteClient/:id', employeesMiddlewares.authenticateJWT, clientsMiddlewares.validateClientId,clients.deleteClient);
 
 module.exports = router;

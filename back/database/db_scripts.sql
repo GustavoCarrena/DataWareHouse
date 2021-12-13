@@ -164,15 +164,20 @@ PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO clients (firstname, lastname, position, email, clientAddress, city_id, porposal_id, company_id) VALUES
-('NombreCliente1', 'ApellidoCliente1', 'Analista', 'cliente1@outlook.com', 'DireccionCliente1', 35,3, 6),
-('NombreCliente2', 'ApellidoCliente2', 'Ingeniero', 'cliente2@outlook.com', 'DireccionCliente2', 41,4, 1),
-('NombreCliente3', 'ApellidoCliente3', 'Ingeniero', 'cliente3@outlook.com', 'DireccionCliente3', 40,1, 1);
+('NombreCliente1', 'ApellidoCliente1', 'Analista', 'cliente1@outlook.com', 'DireccionCliente1', 35,3,6),
+('NombreCliente2', 'ApellidoCliente2', 'Ingeniero', 'cliente2@outlook.com', 'DireccionCliente2', 41,4,1),
+('NombreCliente3', 'ApellidoCliente3', 'Ingeniero', 'cliente3@outlook.com', 'DireccionCliente3', 27,1,3),
+('NombreCliente4', 'ApellidoCliente4', 'Ingeniero', 'cliente4@outlook.com', 'DireccionCliente4', 3,2,4),
+('NombreCliente5', 'ApellidoCliente5', 'Ingeniero', 'cliente5@outlook.com', 'DireccionCliente5', 5,5,5),
+('NombreCliente6', 'ApellidoCliente6', 'Ingeniero', 'cliente6@outlook.com', 'DireccionCliente6', 49,2,2);
 
 CREATE TABLE client_contact (
 id INT UNSIGNED NOT NULL AUTO_INCREMENT,
 client_id INT UNSIGNED NOT NULL,
+whatsapp_channel VARCHAR (255),
 whatsapp_account VARCHAR(255) NOT NULL,
 whatsapp_preference ENUM('Canal Favorito','Sin Preferencia','No Molestar'),
+instagram_channel VARCHAR (255),
 instagram_account VARCHAR(255) NOT NULL,
 instagram_preference ENUM('Canal Favorito','Sin Preferencia','No Molestar'),
 FOREIGN KEY(client_id) REFERENCES clients(id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -180,9 +185,12 @@ PRIMARY KEY(id)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO client_contact (client_id, whatsapp_channel, whatsapp_account, whatsapp_preference,instagram_channel,instagram_account,instagram_preference) VALUES
-(1, '4321-4321', 'Canal Favorito', 'Instagram', '@instagram1','Sin Preferencia'),
-(2, '111-1111','No Molestar','Instagram', '@instagram2','Sin Preferencia'),
-(3, '222-2222','Sin Preferencia', 'Instagram', '@Instagram','Canal Favorito');
+(1, 'Whatsapp','4321-4321', 'Canal Favorito', 'Instagram', '@instagram1','Sin Preferencia'),
+(2, 'Whatsapp','111-1111','No Molestar','Instagram', '@instagram2','Sin Preferencia'),
+(3, 'Whatsapp','222-2222','Sin Preferencia', 'Instagram', '@Instagram','Canal Favorito'),
+(4, 'Whatsapp','222-2222','Sin Preferencia', 'Instagram', '@Instagram','Canal Favorito'),
+(5, 'Whatsapp','222-2222','Sin Preferencia', 'Instagram', '@Instagram','Canal Favorito'),
+(6, 'Whatsapp','222-2222','Sin Preferencia', 'Instagram', '@Instagram','Canal Favorito');
 
 CREATE TABLE roles (
 id CHAR(4) NOT NULL,

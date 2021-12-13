@@ -42,7 +42,7 @@ const companiesMiddlewares = {
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. La ciudad asociada no existe", req.body.city_id)):
 
         next();
-    },//Ok!!!
+    },
 
 
     validateDataCompanyById: async (req, res, next) => {
@@ -55,12 +55,10 @@ const companiesMiddlewares = {
         const phone = req.body.phone.toString();
         const emailValidation = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
         const alphanumericValidation = /[A-Za-z0-9]/i;
-
         const companyDb = await companiesQueries.getAllDataCompanies();
         const companyIdValidation = companyDb.filter(co => co.id === id);
         const cityDB = await regionsQueries.getAllCities();
         const cityValidation = cityDB.filter(ci => ci.id === req.body.city_id);
-
         typeof id !== 'number' || id === " " ||  id.toString().length === 0 ?
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. El formato de nombre del Id de la compañia debe ser numérico no puede estar vacío", "")):
         typeof company_name !== 'string' || alphanumericValidation.test(company_name) === false ?
@@ -73,14 +71,13 @@ const companiesMiddlewares = {
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. Formato de email invalido o campo vacio", "")):
         phone.length < 7 || phone === " " ?
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. El formato de del telefono no puede ser inferior a 7 caracteres", "")):
-
         companyIdValidation.length === 0 ?  
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. El id de la compañia no existe", "")):
         cityValidation.length === 0 ?  
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. La ciudad asociada no existe", "")):
 
         next();
-    },//ok!!!
+    },
 
     validateDataDeleteCompany: async (req, res, next) => {
         
@@ -95,7 +92,7 @@ const companiesMiddlewares = {
         res.status(400).send(new Response(true, 400, "No se pudo realizar la operación. El id de la compañia no existe", id)):
 
         next();
-    },//ok!!!
+    },
 
 };
 

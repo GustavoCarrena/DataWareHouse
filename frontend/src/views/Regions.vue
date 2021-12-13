@@ -6,10 +6,10 @@
         <div class="first-header">
             <h1 class="row col-5">Gestion de Regiones, Países y Ciudades</h1>
             <b-nav class="navbar">
+                <b-nav-item v-if="usersAccess()===true" href="http://localhost:8080/employee">Usuarios</b-nav-item>
                 <b-nav-item href="http://localhost:8080/contacts">Contactos</b-nav-item>
-                <b-nav-item href="http://localhost:8080/employee">Usuarios</b-nav-item>
-                <b-nav-item href="#">Compañias</b-nav-item>
-                <b-nav-item href="http://localhost:8080">Salir</b-nav-item>
+                <b-nav-item href="http://localhost:8080/companies">Compañias</b-nav-item>
+                <b-nav-item @click="logOut()" href="http://localhost:8080">Salir</b-nav-item>
             </b-nav>
         </div>
 
@@ -133,6 +133,18 @@ export default {
 
     methods: {
 
+        logOut() {
+            localStorage.clear();
+        },
+
+        usersAccess() {
+            if (localStorage.getItem('role') === 'ADMI') {
+                return true;
+            } else {
+                return false;
+            }
+        },
+
         showAddRegionModal() {
             this.$bvModal.show("addRegionModal");
         },
@@ -157,17 +169,29 @@ export default {
                 const payload = {
                     region_name: this.regionName
                 };
+                const token = localStorage.getItem('token')
                 const response = await fetch(url, {
                     method: "POST",
                     body: JSON.stringify(payload),
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: 'Bearer' + ' ' + token
                     }
                 });
                 const data = await response.json();
-                this.regions = data.response;
-                this.$bvModal.hide('addRegionModal')
-                await this.getRegionsData();
+                if (data.status == 400 || data.status === 401 || data.status === 404) {
+                    this.$bvModal.msgBoxOk(data.response);
+                    this.$alertify.error('OPERACIÓN CANCELADA')
+                    this.$bvModal.hide("addRegionModal");
+                    this.regionName = '';
+                    await this.getRegionsData();
+                } else {
+                    this.regions = data.response;
+                    this.$bvModal.hide("addRegionModal");
+                    this.regionName = '';
+                    await this.getRegionsData();
+                    this.$alertify.success('OPERACIÓN EXITOSA');
+                }
             } catch (error) {
                 error;
             }
@@ -179,48 +203,51 @@ export default {
                 const payload = {
                     region_name: region.region_name
                 }
+                const token = localStorage.getItem('token')
                 const response = await fetch(url, {
                     method: "PUT",
                     body: JSON.stringify(payload),
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        Authorization: 'Bearer' + ' ' + token
                     },
                 });
                 const data = await response.json();
-
-                if (data.status == 400) {
+                if (data.status == 400 || data.status === 401 || data.status === 404) {
                     this.$bvModal.msgBoxOk(data.response);
                     region.region_name = '';
                     this.$alertify.error('OPERACIÓN CANCELADA')
                     await this.getRegionsData()
                 } else {
-                    await this.getRegionsData()
-                    this.$bvModal.msgBoxOk('Pais editado exitosamente');
+                    this.$bvModal.msgBoxOk('Region editada exitosamente');
                     region.region_name = '';
                     this.$alertify.success('OPERACIÓN EXITOSA');
-
+                    await this.getRegionsData()
                 }
-
             } catch (error) {
                 error
             }
-
         },
-
 
         async removeRegion(region_id) {
 
             try {
                 const url = `http://localhost:3000/regions/deleteRegion/${region_id}`;
+                const token = localStorage.getItem('token')
                 const response = await fetch(url, {
                     method: "DELETE",
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: 'Bearer' + ' ' + token
                     }
                 });
-                await response.json();
-                await this.getRegionsData();
-                this.$alertify.success(`Region '${region_id}' eliminada exitosmente`);
+                const data = await response.json();
+                if (data.status === 401 || data.status === 401 || data.status === 404) {
+                    this.$bvModal.msgBoxOk(data.response)
+                } else {
+                    this.$alertify.success(`Region '${region_id}' eliminada exitosmente`);
+                    await this.getRegionsData();
+                }
             } catch (err) {
                 err
             }
@@ -229,6 +256,7 @@ export default {
         async addContry(region_id) {
             try {
                 const url = `http://localhost:3000/regions/addCountry/${region_id}`;
+                const token = localStorage.getItem('token')
                 const payload = {
                     id: this.newCountryId.toUpperCase(),
                     country_name: this.newCountryNAme
@@ -238,19 +266,22 @@ export default {
                     body: JSON.stringify(payload),
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: 'Bearer' + ' ' + token
                     }
                 });
                 const data = await response.json();
-                if (data.status == 400) {
+                if (data.status == 400 || data.status === 401 || data.status === 404) {
                     this.$bvModal.msgBoxOk(data.response);
                     this.$alertify.error('OPERACIÓN CANCELADA')
+                    this.newCountryId = '';
+                    this.newCountryNAme = '';
                     await this.getRegionsData();
                 } else {
                     this.regions = data.response;
+                    this.$alertify.success('OPERACIÓN EXITOSA');
                     await this.getRegionsData();
                     this.newCountryId = '';
                     this.newCountryNAme = '';
-                    this.$alertify.success('OPERACIÓN EXITOSA');
                 }
             } catch (err) {
                 err
@@ -260,24 +291,27 @@ export default {
         async removeCountry(country_id) {
             try {
                 const url = `http://localhost:3000/regions/deleteCountry/${country_id}`;
-
+                const token = localStorage.getItem('token')
                 const response = await fetch(url, {
                     method: "DELETE",
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: 'Bearer' + ' ' + token
                     }
                 });
-                await response.json();
+                const data = await response.json();
                 await this.getRegionsData();
                 if (country_id === null) {
                     this.$bvModal.msgBoxOk('No existe País para eliminar');
                     this.$alertify.error(`OPERACION CANCELADA`);
                     await this.getRegionsData();
-                } else {
-                    await this.getRegionsData();
-                    this.$alertify.success(`País '${country_id}' eliminado Exitosmente`);
+                } else if (data.status == 400 || data.status === 401 || data.status === 404){
+                    this.$bvModal.msgBoxOk(data.response)
                 }
-
+                else {
+                    this.$alertify.success(`País '${country_id}' eliminado Exitosmente`);
+                    await this.getRegionsData();
+                }
             } catch (err) {
                 err
             }
@@ -289,31 +323,30 @@ export default {
                 const payload = {
                     country_name: country.country_name
                 }
+                const token = localStorage.getItem('token')
                 const response = await fetch(url, {
                     method: "PUT",
                     body: JSON.stringify(payload),
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        Authorization: 'Bearer' + ' ' + token
                     },
                 });
                 const data = await response.json();
-
                 if (country.country_id === null) {
                     this.$bvModal.msgBoxOk('No existe País para editar');
                     country.country_name = '';
                     this.$alertify.error(`OPERACION CANCELADA`);
-                } else if (data.status == 400) {
+                } else if (data.status == 400 || data.status === 401 || data.status === 404 ) {
                     this.$bvModal.msgBoxOk(data.response);
                     this.$alertify.error('OPERACIÓN CANCELADA')
                     await this.getRegionsData()
                 } else {
-                    await this.getRegionsData()
                     this.$bvModal.msgBoxOk('Pais editado exitosamente');
-                    country.country_name = '';
                     this.$alertify.success('OPERACIÓN EXITOSA');
-
+                    await this.getRegionsData()
+                    country.country_name = '';
                 }
-
             } catch (error) {
                 error
             }
@@ -321,36 +354,36 @@ export default {
         },
 
         async addCity(country_id) {
-
             try {
                 const url = `http://localhost:3000/regions/addCity/${country_id}`;
                 const payload = {
                     city_name: this.newCityName
                 };
+                const token = localStorage.getItem('token')
                 const response = await fetch(url, {
                     method: "POST",
                     body: JSON.stringify(payload),
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: 'Bearer' + ' ' + token
                     }
                 });
                 const data = await response.json();
-
                 if (country_id === null) {
                     this.$bvModal.msgBoxOk('No existe País para alta de Ciudad');
                     this.newCityName = '';
                     this.$alertify.error(`OPERACION CANCELADA`);
                     await this.getRegionsData()
-                } else if (data.status == 400) {
-                    this.newCityName = '';
+                } else if (data.status == 400 || data.status === 401 || data.status === 404) {
                     this.$bvModal.msgBoxOk(data.response);
                     this.$alertify.error('OPERACIÓN CANCELADA')
                     await this.getRegionsData()
-                } else {
-                    await this.getRegionsData();
                     this.newCityName = '';
+                } else {
                     this.$bvModal.msgBoxOk(`Ciudad creada exitosamente`);
                     this.$alertify.success('OPERACIÓN EXITOSA');
+                    await this.getRegionsData();
+                    this.newCityName = '';
                 }
             } catch (err) {
                 err
@@ -360,39 +393,45 @@ export default {
         async removeCity(city_id) {
             try {
                 const url = `http://localhost:3000/regions/deleteCity/${city_id}`;
+                const token = localStorage.getItem('token')
                 const response = await fetch(url, {
                     method: "DELETE",
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: 'Bearer' + ' ' + token
                     }
                 });
+                const data = await response.json()
                 if (city_id === null) {
                     this.$bvModal.msgBoxOk('No existe Ciudad para Eliminar');
                     this.$alertify.error(`OPERACION CANCELADA`);
                     await this.getRegionsData()
-                } else {
-                    await response.json();
-                    await this.getRegionsData();
-                    this.$alertify.success(`Ciudad '${city_id}' eliminada exitosmente`);
+                } else if (data.status == 400 || data.status === 401 || data.status === 404) {
+                    this.$bvModal.msgBoxOk(data.response)
+                    this.$alertify.error(`OPERACION CANCELADA`);
                 }
-
+                else {
+                    this.$alertify.success(`Ciudad '${city_id}' eliminada exitosmente`);
+                    await this.getRegionsData();
+                }
             } catch (err) {
                 err
             }
         },
 
         async editCity(city) {
-
             try {
                 const url = `http://localhost:3000/regions/updateCity/${city.city_id}`;
                 const payload = {
                     city_name: city.city_name
                 };
+                const token = localStorage.getItem('token')
                 const response = await fetch(url, {
                     method: "PUT",
                     body: JSON.stringify(payload),
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        Authorization: 'Bearer' + ' ' + token
                     },
                 });
                 const data = await response.json();
@@ -401,20 +440,19 @@ export default {
                     city.city_name = '';
                     this.$alertify.error(`OPERACION CANCELADA`);
                     await this.getRegionsData()
-                } else if (data.status == 400) {
+                } else if (data.status == 400 || data.status === 401 || data.status === 404) {
                     this.$bvModal.msgBoxOk(data.response);
                     this.$alertify.error('OPERACIÓN CANCELADA')
                     await this.getRegionsData()
                 } else {
-                    await this.getRegionsData()
-                    this.$bvModal.msgBoxOk('Pais editado exitosamente');
-                    city.city_name = '';
+                    this.$bvModal.msgBoxOk('Ciudad editada exitosamente');
                     this.$alertify.success('OPERACIÓN EXITOSA');
+                    await this.getRegionsData()
+                    city.city_name = '';
                 }
             } catch (error) {
                 error
             }
-
         },
 
     },
@@ -445,7 +483,13 @@ h1 {
     padding: 0;
 }
 
-;
+.navbar {
+    position: relative;
+    left: 0.8%;
+    padding: 0;
+    top: -12px;
+    max-width: 45%;
+}
 
 .nav-link {
     display: block !important;
@@ -463,8 +507,17 @@ h1 {
     border-color: rgb(37, 54, 136) !important;
     font-family: system-ui !important;
     text-shadow: 1px 1px #dbecf1 !important;
-    font-size: 1.70rem !important;
+    font-size: 1.15rem !important;
     margin: 0 !important;
+
+}
+
+.navbar a:hover {
+    color: #0650c0 !important;
+    border-color: black !important;
+    font-family: system-ui !important;
+    text-shadow: 7px 7px #dbecf1 !important;
+    transform: scale(1.2);
 }
 
 .first-header ul li a:hover {

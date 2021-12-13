@@ -1,7 +1,7 @@
 const sequelize = require('../../database/db_conection');
 
 const regionsQueries = {
-    
+
     /*=== REGIONES ===*/
 
     //Retorna toda la información de regiones, paises y ciudades, asociados
@@ -15,11 +15,12 @@ const regionsQueries = {
             LEFT JOIN cities ci
             ON (ci.country_id = co.id)
             ORDER BY r.region_name
-            `, 
-            {type: sequelize.QueryTypes.SELECT});
-            
-            
-    },//ok!!!
+            `, {
+                type: sequelize.QueryTypes.SELECT
+            });
+
+
+    },
 
     //Alta de Región
     createRegion: (regionData) => {
@@ -27,55 +28,56 @@ const regionsQueries = {
             type: sequelize.QueryTypes.INSERT,
             replacements: [regionData]
         });
-    },//ok!!!
+    },
 
     //Consulta de id y de nombre de regiones
     getRegions: () => {
         return sequelize.query(
-            'SELECT id AS region_id, region_name FROM regions;', 
-            {type: sequelize.QueryTypes.SELECT});
-    },//ok!!!
+            'SELECT id AS region_id, region_name FROM regions;', {
+                type: sequelize.QueryTypes.SELECT
+            });
+    },
 
     getRegionName: () => {
         return sequelize.query(
-            'SELECT region_name FROM regions;', 
-            {type: sequelize.QueryTypes.SELECT});
-    },//ok!!!
-
+            'SELECT region_name FROM regions;', {
+                type: sequelize.QueryTypes.SELECT
+            });
+    },
 
     //Editar Región
-    updateRegiontById : (region_name,id ) => {
+    updateRegiontById: (region_name, id) => {
         return sequelize.query(`UPDATE regions SET region_name = ?  WHERE id = ?`, {
             type: sequelize.QueryTypes.PUT,
-            replacements: [id,region_name]
+            replacements: [id, region_name]
         });
-    },//ok!!!
+    }, 
 
     //Elminar Región
-    deleteRegionById : (id ) => {
+    deleteRegionById: (id) => {
         return sequelize.query(`DELETE FROM regions WHERE id = ?`, {
             type: sequelize.QueryTypes.PUT,
             replacements: [id]
         });
-    },//ok!!!
+    },
 
     /*=== PAISES ===*/
 
     /*=== Consulta de paises por region ===*/
     getCountriesByRegion: (region_id) => {
         return sequelize.query(
-            `SELECT id AS country_id, country_name FROM countries WHERE region_id = ? `, 
-            {
+            `SELECT id AS country_id, country_name FROM countries WHERE region_id = ? `, {
                 type: sequelize.QueryTypes.SELECT,
                 replacements: [region_id]
             });
-    },//ok!!!
+    },
 
     getAllCountries: () => {
         return sequelize.query(
-            `SELECT  * FROM countries`, 
-            {type: sequelize.QueryTypes.SELECT});
-    },//ok!!
+            `SELECT  * FROM countries`, {
+                type: sequelize.QueryTypes.SELECT
+            });
+    },
 
     //Alta de País
     createCountry: (countryData) => {
@@ -83,26 +85,26 @@ const regionsQueries = {
             type: sequelize.QueryTypes.INSERT,
             replacements: countryData
         });
-    },//ok!!!!
+    },
 
     // //Editar País
-    updateCountryById : ( id,country_name) => {
+    updateCountryById: (id, country_name) => {
         return sequelize.query('UPDATE countries SET country_name = ? WHERE id = ? ', {
             type: sequelize.QueryTypes.PUT,
-            replacements: [country_name ,id]
+            replacements: [country_name, id]
         });
-    },//ok!!!
+    },
 
     //Elminar País
-    deleteCountryById : (id ) => {
+    deleteCountryById: (id) => {
         return sequelize.query(`DELETE FROM countries WHERE id = ?`, {
             type: sequelize.QueryTypes.PUT,
             replacements: [id]
         });
-    },//ok!!!
+    },
 
     /*=== CIUDADES ===*/
-    
+
     /*=== Consulta de ciudades por paises ===*/
     getCitiesByCountry: (id) => {
         return sequelize.query(
@@ -112,18 +114,18 @@ const regionsQueries = {
             ON (r.id = co.region_id)
             INNER JOIN cities ci
             ON ( co.id  = ci.country_id)
-            WHERE co.id = ?`, 
-            {
-            type: sequelize.QueryTypes.SELECT,
-            replacements: [id]
+            WHERE co.id = ?`, {
+                type: sequelize.QueryTypes.SELECT,
+                replacements: [id]
             });
-    },//ok!!!
+    },
 
     getAllCities: () => {
         return sequelize.query(
-            `SELECT * FROM cities`, 
-            {type: sequelize.QueryTypes.SELECT});
-    },//ok!!!
+            `SELECT * FROM cities`, {
+                type: sequelize.QueryTypes.SELECT
+            });
+    },
 
     getAllCitiesData: () => {
         return sequelize.query(
@@ -133,9 +135,10 @@ const regionsQueries = {
             ON (ci.country_id = co.id)
             LEFT JOIN regions re
             ON (co.region_id = re.id)
-            ORDER BY ci.id `, 
-            {type: sequelize.QueryTypes.SELECT});
-    },//ok!!!
+            ORDER BY ci.id `, {
+                type: sequelize.QueryTypes.SELECT
+            });
+    },
 
 
     createCity: (countryData) => {
@@ -143,27 +146,26 @@ const regionsQueries = {
             type: sequelize.QueryTypes.INSERT,
             replacements: countryData
         });
-    },//ok!!!
+    },
 
     //Editar Ciudad
-    updateCityById : ( id,city_name) => {
+    updateCityById: (id, city_name) => {
         return sequelize.query('UPDATE cities SET city_name = ? WHERE id = ? ', {
             type: sequelize.QueryTypes.PUT,
-            replacements: [city_name,id]
+            replacements: [city_name, id]
         });
-    },//ok!!!!
+    },
 
     //Elminar Ciudad
-    deleteCityById : (id ) => {
+    deleteCityById: (id) => {
         return sequelize.query(`DELETE FROM cities WHERE id = ?`, {
             type: sequelize.QueryTypes.DELETE,
             replacements: [id]
         });
-    },//OK!!!
+    },
 
+};
 
-}; //fin regions
-
-
-
-module.exports = {regionsQueries}
+module.exports = {
+    regionsQueries
+}
