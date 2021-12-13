@@ -61,5 +61,5 @@ email: admi@admi.com
 clave: admi
 
 #### Usuario sin privilevios para gestión de empleados (usuarios)
-email: admi@admi.com
-clave: admi
+email: user@user.com
+clave: user
