@@ -53,3 +53,13 @@ Framework CSS: bootstrap, bootstrap-vue
 
 ### Inicialización
 npm run start
+
+### Usuarios acceso LogIn
+
+#### Usuario con privilevios de Admnistrador para gestión de empleados (usuarios)
+email: admi@admi.com
+clave: admi
+
+#### Usuario sin privilevios para gestión de empleados (usuarios)
+email: admi@admi.com
+clave: admi
