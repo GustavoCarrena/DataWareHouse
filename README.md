@@ -57,9 +57,9 @@ npm run start
 ### Usuarios acceso LogIn
 
 #### Usuario con privilevios de Admnistrador para gestión de empleados (usuarios)
-email: admi@admi.com
-clave: admi
+email: admi@admi.com  
+clave: admi  
 
 #### Usuario sin privilevios para gestión de empleados (usuarios)
-email: user@user.com
-clave: user
+email: user@user.com  
+clave: user  
